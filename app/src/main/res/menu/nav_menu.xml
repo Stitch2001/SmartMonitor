@@ -2,13 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single" >
         <item
-            android:id="@+id/nav_login"
-            android:icon="@android:drawable/ic_menu_compass"
-            android:title="登录" />
+        android:id="@+id/nav_login"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="登录" />
+        <item
+            android:id="@+id/nav_monitor"
+            android:icon="@android:drawable/ic_menu_search"
+            android:title="检查" />
         <item
             android:id="@+id/nav_set_regulation"
             android:icon="@android:drawable/ic_menu_manage"
             android:title="设置检查顺序" />
+        <item
+            android:id="@+id/nav_activity"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="大型活动" />
+        <item
+            android:id="@+id/nav_set_alarm"
+            android:icon="@android:drawable/ic_menu_always_landscape_portrait"
+            android:title="通知设置" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@android:drawable/ic_menu_info_details"
