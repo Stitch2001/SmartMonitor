@@ -1,6 +1,7 @@
 package com.gdbjzx.smartmonitor;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -37,15 +38,24 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_sort_by_size);
         }//设置Toolbar为默认ActionBar，设置图标
+        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+        startActivityForResult(intent,ISLOGINED);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         /*设置导航栏点击事件*/
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.nav_login:
+                    case R.id.nav_logout:
+                        /*阻止自动登录*/
+                        SharedPreferences.Editor editor = getSharedPreferences("pw",MODE_PRIVATE).edit();//创建存储文件
+                        editor.putString("password","");
+                        editor.putBoolean("isAuto",false);
+                        editor.apply();
+                        /*阻止自动登录*/
                         Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                         startActivityForResult(intent,ISLOGINED);
+                        break;
                     default:
                 }
                 mDrawerLayout.closeDrawers();
