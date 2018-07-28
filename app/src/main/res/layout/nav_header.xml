@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="180dp"
     android:padding="10dp"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/nav_header_background">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/nav_header_icon"
+        android:layout_above="@id/username_text"/>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="假装这里有部徽"
-        android:textSize="30dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/username_text"
+        android:layout_alignParentBottom="true"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:text="欢迎你，纪检部干事"
+        android:textStyle="bold"/>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
