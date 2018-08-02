@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/login_background">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -99,20 +100,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:alpha="87"
                     android:checked="true"
                     android:text="记住密码"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textColor="#87000000"/>
 
                 <CheckBox
                     android:id="@+id/auto_login_check"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:alpha="87"
                     android:checked="true"
                     android:text="自动登录"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textColor="#87000000"/>
             </RelativeLayout>
 
             <Button
@@ -120,10 +121,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/colorPrimary"
+                android:background="#8700BCD4"
                 android:text="确定"
                 android:textColor="#FFF"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                />
 
         </LinearLayout>
 

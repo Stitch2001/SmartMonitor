@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         /*读取账号密码*/
         Snackbar.make(loginButton,"请先登录",Snackbar.LENGTH_SHORT).show();
-        islogined = RESULT_CANCELED;//为了方便，暂时设置为OK
+        islogined = RESULT_CANCELED;
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
