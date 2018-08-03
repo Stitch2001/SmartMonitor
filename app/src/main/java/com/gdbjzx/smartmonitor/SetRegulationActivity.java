@@ -11,6 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SetRegulationActivity extends AppCompatActivity {
 
@@ -20,11 +24,18 @@ public class SetRegulationActivity extends AppCompatActivity {
 
     private static final int LOGIN = 1;
 
+    private List<mClass> classList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_regulation);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        /*导入班级布局*/
+        initClass();//初始化班级数据
+        ClassAdapter adapter = new ClassAdapter(SetRegulationActivity.this,R.layout.class_item,classList);
+        ListView listItem = (ListView) findViewById(R.id.list_item);
+        listItem.setAdapter(adapter);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -70,6 +81,7 @@ public class SetRegulationActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
             default:
         }
         return true;
@@ -79,5 +91,26 @@ public class SetRegulationActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         navigationView.setCheckedItem(R.id.nav_set_regulation);//设置“设置检查顺序”高亮
+    }
+
+    private void initClass(){
+        int gradeArray1[] = {101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118};
+        int gradeArray2[] = {201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218};
+        int gradeArray3[] = {301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318};
+        int gradeArray4[] = {401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418};
+        int gradeArray5[] = {501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518};
+        int gradeArray6[] = {601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618};
+        mClass grade1 = new mClass("初一",gradeArray1);
+        mClass grade2 = new mClass("初二",gradeArray2);
+        mClass grade3 = new mClass("初三",gradeArray3);
+        mClass grade4 = new mClass("高一",gradeArray4);
+        mClass grade5 = new mClass("高二",gradeArray5);
+        mClass grade6 = new mClass("高三",gradeArray6);
+        classList.add(grade4);//考虑到本校实际情况，从高一开始导入布局
+        classList.add(grade5);
+        classList.add(grade6);
+        classList.add(grade1);
+        classList.add(grade2);
+        classList.add(grade3);
     }
 }

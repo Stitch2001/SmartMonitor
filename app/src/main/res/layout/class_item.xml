@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/grade_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="高一"
+        android:textSize="16sp"
+        android:layout_margin="12dp"
+        android:textColor="#87000000"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_1" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_2" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_3" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_4" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_5" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_6" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_7" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_8" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_9" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_10" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_11"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_11" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_12" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_13"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_13" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_14"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_14" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_15"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_15" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_16" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_17"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_17" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/class_18"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@drawable/class_18" />
+
+    </LinearLayout>
+</LinearLayout>
