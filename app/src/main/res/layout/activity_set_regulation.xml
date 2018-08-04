@@ -23,7 +23,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="设置检查顺序"/>
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
