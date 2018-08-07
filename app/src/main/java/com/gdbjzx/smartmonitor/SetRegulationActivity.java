@@ -2,6 +2,8 @@ package com.gdbjzx.smartmonitor;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,21 +14,40 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SetRegulationActivity extends AppCompatActivity {
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 
-    private DrawerLayout mDrawerLayout;
-
-    private NavigationView navigationView;
+public class SetRegulationActivity extends AppCompatActivity  {
 
     private static final int LOGIN = 1;
+
+    private DrawerLayout mDrawerLayout;
+    private NavigationView navigationView;
+    private RecyclerView recyclerView;
+    private ImageView imageView;
+    private LinearLayoutManager layoutManager;
+    private View currentView;
+
+    private static final int SENIOR_1 = 0;
+    private static final int SENIOR_2 = 1;
+    private static final int SENIOR_3 = 2;
+    private static final int JUNIOR_1 = 3;
+    private static final int JUNIOR_2 = 4;
+    private static final int JUNIOR_3 = 5;
+
+    private int[][] classArray = new int[6][19];
+
+    private int grade,classroom,max,currentNum;//用作循环变量
 
     private List<mClass> classList = new ArrayList<>();
 
@@ -72,13 +93,26 @@ public class SetRegulationActivity extends AppCompatActivity {
             }
         });
 
+        /*读取检查顺序*/
+        max = 0;
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+            for (classroom = 1;classroom <= 18;classroom++){
+                if (pref.getInt(grade+""+classroom+"",0) != 0){
+                    classArray[grade][classroom] = pref.getInt(grade+""+classroom+"",0);
+                    if (max < classArray[grade][classroom]) max = classArray[grade][classroom];
+                }
+            }
+        }
+
         /*导入班级布局*/
         initClass();//初始化班级数据
-        RecyclerView listItem = (RecyclerView) findViewById(R.id.list_item);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);//设置线性布局
-        listItem.setLayoutManager(layoutManager);//指定布局
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);//设置线性布局
+        recyclerView.setLayoutManager(layoutManager);//指定布局
         ClassAdapter adapter = new ClassAdapter(classList);//设置适配器
-        listItem.setAdapter(adapter);//加载适配器
+        recyclerView.setAdapter(adapter);//加载适配器
+        initOnClickListener();//初始化点击事件
     }
 
     /*点击按钮出现左侧菜单*/
@@ -101,18 +135,12 @@ public class SetRegulationActivity extends AppCompatActivity {
     }
 
     private void initClass(){
-        int gradeArray1[] = {101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118};
-        int gradeArray2[] = {201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218};
-        int gradeArray3[] = {301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318};
-        int gradeArray4[] = {401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418};
-        int gradeArray5[] = {501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518};
-        int gradeArray6[] = {601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618};
-        mClass grade1 = new mClass("初一",gradeArray1);
-        mClass grade2 = new mClass("初二",gradeArray2);
-        mClass grade3 = new mClass("初三",gradeArray3);
-        mClass grade4 = new mClass("高一",gradeArray4);
-        mClass grade5 = new mClass("高二",gradeArray5);
-        mClass grade6 = new mClass("高三",gradeArray6);
+        mClass grade1 = new mClass("初一");
+        mClass grade2 = new mClass("初二");
+        mClass grade3 = new mClass("初三");
+        mClass grade4 = new mClass("高一");
+        mClass grade5 = new mClass("高二");
+        mClass grade6 = new mClass("高三");
         classList.add(grade4);//考虑到本校实际情况，从高一开始导入布局
         classList.add(grade5);
         classList.add(grade6);
@@ -120,4 +148,85 @@ public class SetRegulationActivity extends AppCompatActivity {
         classList.add(grade2);
         classList.add(grade3);
     }
+
+    private void initOnClickListener(){
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                /*非常愚蠢的枚举法，但没想出其它办法*/
+                currentView = layoutManager.findViewByPosition(SENIOR_1);
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (classArray[SENIOR_1][1] == 0){
+                            max++;classArray[SENIOR_1][1] = max;//将此班级置于队列末尾
+                            renewButtonImage();
+                        } else {
+                            //隐藏角标
+                            new QBadgeView(MyApplication.getContext()).bindTarget(imageView).hide(true);
+                            renewList(SENIOR_1,1);
+                            renewButtonImage();
+                        }
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (classArray[SENIOR_1][2] == 0){
+                            max++;classArray[SENIOR_1][2] = max;//将此班级置于队列末尾
+                            renewButtonImage();
+                        } else {
+                            //隐藏角标
+                            new QBadgeView(MyApplication.getContext()).bindTarget(imageView).hide(true);
+                            renewList(SENIOR_1,2);
+                            renewButtonImage();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void renewButtonImage(){
+        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+            for (classroom = 1;classroom <= 18;classroom++){
+                if (classArray[grade][classroom] != 0) {
+                    switch (grade){
+                        case SENIOR_1:
+                            currentView = layoutManager.findViewByPosition(SENIOR_1);
+                            switch (classroom){
+                                case 1:
+                                    Log.d("Set","OK");
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                    new QBadgeView(MyApplication.getContext()).bindTarget(imageView).setBadgeText(classArray[grade][classroom]+"")
+                                        .setBadgeGravity(Gravity.TOP|Gravity.END).setGravityOffset(0,0,true);
+                                    break;
+                                case 2:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                    new QBadgeView(MyApplication.getContext()).bindTarget(imageView).setBadgeText(classArray[grade][classroom]+"")
+                                            .setBadgeGravity(Gravity.TOP|Gravity.END).setGravityOffset(0,0,true);
+                                    break;
+                                default:
+                            }
+                            break;
+                        default:
+                    }
+                };
+            }
+        }
+    }
+
+    /*对检查顺序表重新排序*/
+    private void renewList(int currentGrade,int currentClassroom){
+        currentNum = classArray[currentGrade][currentClassroom];
+        max--;classArray[currentGrade][currentClassroom] = 0;
+        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+            for (classroom = 1;classroom <= 18;classroom++){
+                if (classArray[grade][classroom] == currentNum) classArray[grade][classroom]--;
+            }
+        }
+    }
+
 }

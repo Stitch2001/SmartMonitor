@@ -16,7 +16,7 @@
 
     <!-- 基础模块 END -->
     <application
-        android:name=".MyLeanCloudApp"
+        android:name="com.gdbjzx.smartmonitor.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="智慧纪检"

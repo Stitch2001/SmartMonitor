@@ -24,7 +24,7 @@
             app:title="设置检查顺序"/>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/list_item"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
