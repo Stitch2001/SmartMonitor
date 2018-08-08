@@ -39,7 +39,13 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         /*加载布局*/
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.class_item,parent,false);
-        ViewHolder holder = new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.gradeText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("ClassAdapter",holder.getAdapterPosition()+"");
+            }
+        });
         return holder;
     }
 

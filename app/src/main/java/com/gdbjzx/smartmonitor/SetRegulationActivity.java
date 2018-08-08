@@ -37,6 +37,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private ImageView imageView;
     private LinearLayoutManager layoutManager;
     private View currentView;
+    private SharedPreferences.Editor editor;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -46,6 +47,8 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private static final int JUNIOR_3 = 5;
 
     private int[][] classArray = new int[6][19];
+
+    private Badge[][] badges = new Badge[6][19];
 
     private int grade,classroom,max,currentNum;//用作循环变量
 
@@ -93,9 +96,18 @@ public class SetRegulationActivity extends AppCompatActivity  {
             }
         });
 
+        /*导入班级布局*/
+        initClass();//初始化班级数据
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);//设置线性布局
+        recyclerView.setLayoutManager(layoutManager);//指定布局
+        ClassAdapter adapter = new ClassAdapter(classList);//设置适配器
+        recyclerView.setAdapter(adapter);//加载适配器
+        initOnClickListener();//初始化点击事件
+
         /*读取检查顺序*/
         max = 0;
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
                 if (pref.getInt(grade+""+classroom+"",0) != 0){
@@ -105,14 +117,8 @@ public class SetRegulationActivity extends AppCompatActivity  {
             }
         }
 
-        /*导入班级布局*/
-        initClass();//初始化班级数据
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(this);//设置线性布局
-        recyclerView.setLayoutManager(layoutManager);//指定布局
-        ClassAdapter adapter = new ClassAdapter(classList);//设置适配器
-        recyclerView.setAdapter(adapter);//加载适配器
-        initOnClickListener();//初始化点击事件
+        /*写入检查顺序初始化*/
+        editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
     }
 
     /*点击按钮出现左侧菜单*/
@@ -149,44 +155,1244 @@ public class SetRegulationActivity extends AppCompatActivity  {
         classList.add(grade3);
     }
 
+    /*点击事件监听器*/
     private void initOnClickListener(){
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
                 /*非常愚蠢的枚举法，但没想出其它办法*/
-                currentView = layoutManager.findViewByPosition(SENIOR_1);
+                currentView = layoutManager.findViewByPosition(SENIOR_1);//设置当前年级为高一
                 imageView = (ImageView) currentView.findViewById(R.id.class_1);
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (classArray[SENIOR_1][1] == 0){
-                            max++;classArray[SENIOR_1][1] = max;//将此班级置于队列末尾
-                            renewButtonImage();
-                        } else {
-                            //隐藏角标
-                            new QBadgeView(MyApplication.getContext()).bindTarget(imageView).hide(true);
-                            renewList(SENIOR_1,1);
-                            renewButtonImage();
-                        }
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(SENIOR_1,1,R.drawable.class_1);
                     }
                 });
                 imageView = (ImageView) currentView.findViewById(R.id.class_2);
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (classArray[SENIOR_1][2] == 0){
-                            max++;classArray[SENIOR_1][2] = max;//将此班级置于队列末尾
-                            renewButtonImage();
-                        } else {
-                            //隐藏角标
-                            new QBadgeView(MyApplication.getContext()).bindTarget(imageView).hide(true);
-                            renewList(SENIOR_1,2);
-                            renewButtonImage();
-                        }
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(SENIOR_1,2,R.drawable.class_2);
                     }
                 });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(SENIOR_1,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(SENIOR_1,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(SENIOR_1,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(SENIOR_1,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(SENIOR_1,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(SENIOR_1,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(SENIOR_1,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(SENIOR_1,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(SENIOR_1,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(SENIOR_1,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(SENIOR_1,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(SENIOR_1,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(SENIOR_1,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(SENIOR_1,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(SENIOR_1,18,R.drawable.class_18);
+                    }
+                });
+
+                currentView = layoutManager.findViewByPosition(SENIOR_2);//设置当前年级为高二
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(SENIOR_2,1,R.drawable.class_1);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(SENIOR_2,2,R.drawable.class_2);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(SENIOR_2,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(SENIOR_2,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(SENIOR_2,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_2,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_2,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_2,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(SENIOR_2,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(SENIOR_2,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(SENIOR_2,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(SENIOR_2,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(SENIOR_2,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(SENIOR_2,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(SENIOR_2,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(SENIOR_2,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(SENIOR_2,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(SENIOR_2,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(SENIOR_2,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(SENIOR_2,18,R.drawable.class_18);
+                    }
+                });
+
+                currentView = layoutManager.findViewByPosition(SENIOR_3);//设置当前年级为高三
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(SENIOR_3,1,R.drawable.class_1);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(SENIOR_3,2,R.drawable.class_2);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(SENIOR_3,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(SENIOR_3,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(SENIOR_3,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_3,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_3,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(SENIOR_3,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(SENIOR_3,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(SENIOR_3,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(SENIOR_3,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(SENIOR_3,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(SENIOR_3,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(SENIOR_3,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(SENIOR_3,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(SENIOR_3,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(SENIOR_3,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(SENIOR_3,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(SENIOR_3,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(SENIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(SENIOR_3,18,R.drawable.class_18);
+                    }
+                });
+
+/*                currentView = layoutManager.findViewByPosition(JUNIOR_1);//设置当前年级为初一
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(JUNIOR_1,1,R.drawable.class_1);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(JUNIOR_1,2,R.drawable.class_2);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(JUNIOR_1,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(JUNIOR_1,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(JUNIOR_1,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(JUNIOR_1,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(JUNIOR_1,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(JUNIOR_1,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(JUNIOR_1,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(JUNIOR_1,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(JUNIOR_1,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(JUNIOR_1,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(JUNIOR_1,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(JUNIOR_1,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(JUNIOR_1,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(JUNIOR_1,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(JUNIOR_1,18,R.drawable.class_18);
+                    }
+                });
+
+                currentView = layoutManager.findViewByPosition(JUNIOR_2);//设置当前年级为初二
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(JUNIOR_2,1,R.drawable.class_1);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(JUNIOR_2,2,R.drawable.class_2);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(JUNIOR_2,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(JUNIOR_2,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(JUNIOR_2,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_2,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_2,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_2,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(JUNIOR_2,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(JUNIOR_2,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(JUNIOR_2,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(JUNIOR_2,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(JUNIOR_2,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(JUNIOR_2,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(JUNIOR_2,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(JUNIOR_2,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(JUNIOR_2,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(JUNIOR_2,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(JUNIOR_2,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(JUNIOR_2,18,R.drawable.class_18);
+                    }
+                });
+
+                currentView = layoutManager.findViewByPosition(JUNIOR_3);//设置当前年级为初三
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(JUNIOR_3,1,R.drawable.class_1);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(JUNIOR_3,2,R.drawable.class_2);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(JUNIOR_3,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(JUNIOR_3,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(JUNIOR_3,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_3,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_3,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_3,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(JUNIOR_3,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(JUNIOR_3,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(JUNIOR_3,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(JUNIOR_3,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(JUNIOR_3,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(JUNIOR_3,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(JUNIOR_3,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(JUNIOR_3,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(JUNIOR_3,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(JUNIOR_3,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(JUNIOR_3,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(JUNIOR_3,18,R.drawable.class_18);
+                    }
+                });*/
+                renewButtonImage();
+                Log.d("init",layoutManager.findViewByPosition(JUNIOR_2)+"");
             }
         });
+    }
+
+    /*点击事件的具体方法*/
+    private void setOnClickMethod(int grade,int classroom,int imageId){
+        if (classArray[grade][classroom] == 0){
+            max++;classArray[grade][classroom] = max;//将此班级置于队列末尾
+            renewButtonImage();
+        } else {
+            if (badges[grade][classroom] != null){
+                badges[grade][classroom].hide(true);
+                badges[grade][classroom] = null;
+            }//隐藏角标
+            imageView.setImageResource(imageId);
+            renewList(grade,classroom);
+            renewButtonImage();
+        }
+
     }
 
     private void renewButtonImage(){
@@ -198,35 +1404,1274 @@ public class SetRegulationActivity extends AppCompatActivity  {
                             currentView = layoutManager.findViewByPosition(SENIOR_1);
                             switch (classroom){
                                 case 1:
-                                    Log.d("Set","OK");
                                     imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    new QBadgeView(MyApplication.getContext()).bindTarget(imageView).setBadgeText(classArray[grade][classroom]+"")
-                                        .setBadgeGravity(Gravity.TOP|Gravity.END).setGravityOffset(0,0,true);
+                                    if (badges[grade][classroom] == null) {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
                                     break;
                                 case 2:
                                     imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    new QBadgeView(MyApplication.getContext()).bindTarget(imageView).setBadgeText(classArray[grade][classroom]+"")
-                                            .setBadgeGravity(Gravity.TOP|Gravity.END).setGravityOffset(0,0,true);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 3:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 4:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 5:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 6:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 7:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 8:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 9:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 10:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 11:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 12:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 13:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 14:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 15:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 16:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 17:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 18:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
                                     break;
                                 default:
+                                    break;
+                            }
+                            break;
+                        case SENIOR_2:
+                            currentView = layoutManager.findViewByPosition(SENIOR_2);
+                            switch (classroom){
+                                case 1:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                    if (badges[grade][classroom] == null) {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 2:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 3:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 4:
+                                    if (badges[grade][classroom] == null){
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 5:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 6:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 7:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 8:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 9:
+                                    if (badges[grade][classroom] == null){
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 10:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 11:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 12:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 13:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 14:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 15:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 16:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 17:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 18:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case SENIOR_3:
+                            currentView = layoutManager.findViewByPosition(SENIOR_3);
+                            switch (classroom){
+                                case 1:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                    if (badges[grade][classroom] == null) {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 2:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 3:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 4:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 5:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 6:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 7:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 8:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 9:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 10:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 11:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 12:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 13:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 14:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 15:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 16:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 17:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 18:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case JUNIOR_1:
+                            currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                            switch (classroom){
+                                case 1:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                    if (badges[grade][classroom] == null) {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 2:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 3:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 4:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 5:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 6:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 7:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 8:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 9:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 10:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 11:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 12:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 13:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 14:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 15:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 16:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 17:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 18:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case JUNIOR_2:
+                            currentView = layoutManager.findViewByPosition(JUNIOR_2);
+                            switch (classroom){
+                                case 1:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                    if (badges[grade][classroom] == null) {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 2:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 3:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 4:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 5:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 6:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 7:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 8:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 9:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 10:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 11:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 12:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 13:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 14:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 15:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 16:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 17:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 18:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case JUNIOR_3:
+                            currentView = layoutManager.findViewByPosition(JUNIOR_3);
+                            switch (classroom){
+                                case 1:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                    if (badges[grade][classroom] == null) {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 2:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 3:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                case 4:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 5:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 6:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 7:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 8:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 9:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 10:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 11:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 12:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 13:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 14:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 15:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 16:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 17:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                case 18:
+                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                    if (badges[grade][classroom] == null){
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
+                                                .setGravityOffset(0,0,true);
+                                    } else {
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
                             break;
                         default:
+                            break;
                     }
                 };
             }
         }
     }
 
-    /*对检查顺序表重新排序*/
+    /*对检查顺序表重新排序并实时保存*/
     private void renewList(int currentGrade,int currentClassroom){
         currentNum = classArray[currentGrade][currentClassroom];
         max--;classArray[currentGrade][currentClassroom] = 0;
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
-                if (classArray[grade][classroom] == currentNum) classArray[grade][classroom]--;
+                if (classArray[grade][classroom] >= currentNum) classArray[grade][classroom]--;
+                editor.putInt(grade+""+classroom+"",classArray[grade][classroom]);
             }
         }
+        editor.apply();
     }
-
 }
