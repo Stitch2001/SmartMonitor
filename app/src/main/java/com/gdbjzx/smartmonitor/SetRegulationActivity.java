@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -38,6 +39,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private LinearLayoutManager layoutManager;
     private View currentView;
     private SharedPreferences.Editor editor;
+    private ClassAdapter adapter;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -53,6 +55,10 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private int grade,classroom,max,currentNum;//用作循环变量
 
     private List<mClass> classList = new ArrayList<>();
+
+    private int viewId,lightImageId;
+
+    private boolean isJunior1Loaded,isJunior2Loaded,isJunior3Loaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +107,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);//设置线性布局
         recyclerView.setLayoutManager(layoutManager);//指定布局
-        ClassAdapter adapter = new ClassAdapter(classList);//设置适配器
+        adapter = new ClassAdapter(classList);//设置适配器
         recyclerView.setAdapter(adapter);//加载适配器
         initOnClickListener();//初始化点击事件
 
@@ -767,209 +773,221 @@ public class SetRegulationActivity extends AppCompatActivity  {
                     }
                 });
 
-/*                currentView = layoutManager.findViewByPosition(JUNIOR_1);//设置当前年级为初一
-                imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                imageView.setOnClickListener(new View.OnClickListener() {
+/*                recyclerView.setOnDragListener(new View.OnDragListener() {
                     @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                        imageView.setImageResource(R.drawable.class_light_1);
-                        setOnClickMethod(JUNIOR_1,1,R.drawable.class_1);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                        imageView.setImageResource(R.drawable.class_light_2);
-                        setOnClickMethod(JUNIOR_1,2,R.drawable.class_2);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                        imageView.setImageResource(R.drawable.class_light_3);
-                        setOnClickMethod(JUNIOR_1,3,R.drawable.class_3);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                        imageView.setImageResource(R.drawable.class_light_4);
-                        setOnClickMethod(JUNIOR_1,4,R.drawable.class_4);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                        imageView.setImageResource(R.drawable.class_light_5);
-                        setOnClickMethod(JUNIOR_1,5,R.drawable.class_5);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                        imageView.setImageResource(R.drawable.class_light_6);
-                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                        imageView.setImageResource(R.drawable.class_light_6);
-                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                        imageView.setImageResource(R.drawable.class_light_6);
-                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                        imageView.setImageResource(R.drawable.class_light_7);
-                        setOnClickMethod(JUNIOR_1,7,R.drawable.class_7);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                        imageView.setImageResource(R.drawable.class_light_8);
-                        setOnClickMethod(JUNIOR_1,8,R.drawable.class_8);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                        imageView.setImageResource(R.drawable.class_light_9);
-                        setOnClickMethod(JUNIOR_1,9,R.drawable.class_9);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                        imageView.setImageResource(R.drawable.class_light_10);
-                        setOnClickMethod(JUNIOR_1,10,R.drawable.class_10);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                        imageView.setImageResource(R.drawable.class_light_11);
-                        setOnClickMethod(JUNIOR_1,11,R.drawable.class_11);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                        imageView.setImageResource(R.drawable.class_light_12);
-                        setOnClickMethod(JUNIOR_1,12,R.drawable.class_12);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                        imageView.setImageResource(R.drawable.class_light_13);
-                        setOnClickMethod(JUNIOR_1,13,R.drawable.class_13);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                        imageView.setImageResource(R.drawable.class_light_14);
-                        setOnClickMethod(JUNIOR_1,14,R.drawable.class_14);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                        imageView.setImageResource(R.drawable.class_light_15);
-                        setOnClickMethod(JUNIOR_1,15,R.drawable.class_15);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                        imageView.setImageResource(R.drawable.class_light_16);
-                        setOnClickMethod(JUNIOR_1,16,R.drawable.class_16);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                        imageView.setImageResource(R.drawable.class_light_17);
-                        setOnClickMethod(JUNIOR_1,17,R.drawable.class_17);
-                    }
-                });
-                imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                        imageView.setImageResource(R.drawable.class_light_18);
-                        setOnClickMethod(JUNIOR_1,18,R.drawable.class_18);
+                    public boolean onDrag(View view, DragEvent dragEvent) {
+                        Log.d("Count",adapter.getItemCount()+"");
+                        Log.d("isLoaded",isJunior1Loaded+"");
+                        if (adapter.getItemCount() == 3)
+                            if (!isJunior1Loaded){
+                                isJunior1Loaded = true;
+                                currentView = layoutManager.findViewByPosition(JUNIOR_1);//设置当前年级为初一
+                                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                                        imageView.setImageResource(R.drawable.class_light_1);
+                                        setOnClickMethod(JUNIOR_1,1,R.drawable.class_1);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                                        imageView.setImageResource(R.drawable.class_light_2);
+                                        setOnClickMethod(JUNIOR_1,2,R.drawable.class_2);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                                        imageView.setImageResource(R.drawable.class_light_3);
+                                        setOnClickMethod(JUNIOR_1,3,R.drawable.class_3);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                                        imageView.setImageResource(R.drawable.class_light_4);
+                                        setOnClickMethod(JUNIOR_1,4,R.drawable.class_4);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                                        imageView.setImageResource(R.drawable.class_light_5);
+                                        setOnClickMethod(JUNIOR_1,5,R.drawable.class_5);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                                        imageView.setImageResource(R.drawable.class_light_6);
+                                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                                        imageView.setImageResource(R.drawable.class_light_7);
+                                        setOnClickMethod(JUNIOR_1,7,R.drawable.class_7);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                                        imageView.setImageResource(R.drawable.class_light_8);
+                                        setOnClickMethod(JUNIOR_1,8,R.drawable.class_8);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                                        imageView.setImageResource(R.drawable.class_light_9);
+                                        setOnClickMethod(JUNIOR_1,9,R.drawable.class_9);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                                        imageView.setImageResource(R.drawable.class_light_10);
+                                        setOnClickMethod(JUNIOR_1,10,R.drawable.class_10);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                                        imageView.setImageResource(R.drawable.class_light_11);
+                                        setOnClickMethod(JUNIOR_1,11,R.drawable.class_11);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                                        imageView.setImageResource(R.drawable.class_light_12);
+                                        setOnClickMethod(JUNIOR_1,12,R.drawable.class_12);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                                        imageView.setImageResource(R.drawable.class_light_13);
+                                        setOnClickMethod(JUNIOR_1,13,R.drawable.class_13);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                                        imageView.setImageResource(R.drawable.class_light_14);
+                                        setOnClickMethod(JUNIOR_1,14,R.drawable.class_14);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                                        imageView.setImageResource(R.drawable.class_light_15);
+                                        setOnClickMethod(JUNIOR_1,15,R.drawable.class_15);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                                        imageView.setImageResource(R.drawable.class_light_16);
+                                        setOnClickMethod(JUNIOR_1,16,R.drawable.class_16);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                                        imageView.setImageResource(R.drawable.class_light_17);
+                                        setOnClickMethod(JUNIOR_1,17,R.drawable.class_17);
+                                    }
+                                });
+                                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                imageView.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                                        imageView.setImageResource(R.drawable.class_light_18);
+                                        setOnClickMethod(JUNIOR_1,18,R.drawable.class_18);
+                                    }
+                                });
+                            }
+                            return true;
                     }
                 });
 
-                currentView = layoutManager.findViewByPosition(JUNIOR_2);//设置当前年级为初二
+/*                currentView = layoutManager.findViewByPosition(JUNIOR_2);//设置当前年级为初二
                 imageView = (ImageView) currentView.findViewById(R.id.class_1);
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -1373,7 +1391,6 @@ public class SetRegulationActivity extends AppCompatActivity  {
                     }
                 });*/
                 renewButtonImage();
-                Log.d("init",layoutManager.findViewByPosition(JUNIOR_2)+"");
             }
         });
     }
@@ -1392,1272 +1409,101 @@ public class SetRegulationActivity extends AppCompatActivity  {
             renewList(grade,classroom);
             renewButtonImage();
         }
-
     }
 
+    /*更新按钮图片和角标*/
     private void renewButtonImage(){
-        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
-            for (classroom = 1;classroom <= 18;classroom++){
+        for (grade = SENIOR_1;grade <= SENIOR_3;grade++) {
+            currentView = layoutManager.findViewByPosition(grade);
+            for (classroom = 1; classroom <= 18; classroom++) {
+                switch (classroom) {
+                    case 1:
+                        viewId = R.id.class_1;
+                        lightImageId = R.drawable.class_light_1;
+                        break;
+                    case 2:
+                        viewId = R.id.class_2;
+                        lightImageId = R.drawable.class_light_2;
+                        break;
+                    case 3:
+                        viewId = R.id.class_3;
+                        lightImageId = R.drawable.class_light_3;
+                        break;
+                    case 4:
+                        viewId = R.id.class_4;
+                        lightImageId = R.drawable.class_light_4;
+                        break;
+                    case 5:
+                        viewId = R.id.class_5;
+                        lightImageId = R.drawable.class_light_5;
+                        break;
+                    case 6:
+                        viewId = R.id.class_6;
+                        lightImageId = R.drawable.class_light_6;
+                        break;
+                    case 7:
+                        viewId = R.id.class_7;
+                        lightImageId = R.drawable.class_light_7;
+                        break;
+                    case 8:
+                        viewId = R.id.class_8;
+                        lightImageId = R.drawable.class_light_8;
+                        break;
+                    case 9:
+                        viewId = R.id.class_9;
+                        lightImageId = R.drawable.class_light_9;
+                        break;
+                    case 10:
+                        viewId = R.id.class_10;
+                        lightImageId = R.drawable.class_light_10;
+                        break;
+                    case 11:
+                        viewId = R.id.class_11;
+                        lightImageId = R.drawable.class_light_11;
+                        break;
+                    case 12:
+                        viewId = R.id.class_12;
+                        lightImageId = R.drawable.class_light_12;
+                        break;
+                    case 13:
+                        viewId = R.id.class_13;
+                        lightImageId = R.drawable.class_light_13;
+                        break;
+                    case 14:
+                        viewId = R.id.class_14;
+                        lightImageId = R.drawable.class_light_14;
+                        break;
+                    case 15:
+                        viewId = R.id.class_15;
+                        lightImageId = R.drawable.class_light_15;
+                        break;
+                    case 16:
+                        viewId = R.id.class_16;
+                        lightImageId = R.drawable.class_light_16;
+                        break;
+                    case 17:
+                        viewId = R.id.class_17;
+                        lightImageId = R.drawable.class_light_17;
+                        break;
+                    case 18:
+                        viewId = R.id.class_18;
+                        lightImageId = R.drawable.class_light_18;
+                        break;
+                    default:
+                        break;
+                }
                 if (classArray[grade][classroom] != 0) {
-                    switch (grade){
-                        case SENIOR_1:
-                            currentView = layoutManager.findViewByPosition(SENIOR_1);
-                            switch (classroom){
-                                case 1:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    if (badges[grade][classroom] == null) {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 2:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 3:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 4:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 5:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 6:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 7:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 8:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 9:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 10:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 11:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 12:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 13:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 14:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 15:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 16:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 17:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 18:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case SENIOR_2:
-                            currentView = layoutManager.findViewByPosition(SENIOR_2);
-                            switch (classroom){
-                                case 1:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    if (badges[grade][classroom] == null) {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 2:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 3:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 4:
-                                    if (badges[grade][classroom] == null){
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 5:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 6:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 7:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 8:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 9:
-                                    if (badges[grade][classroom] == null){
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 10:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 11:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 12:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 13:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 14:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 15:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 16:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 17:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 18:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case SENIOR_3:
-                            currentView = layoutManager.findViewByPosition(SENIOR_3);
-                            switch (classroom){
-                                case 1:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    if (badges[grade][classroom] == null) {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 2:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 3:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 4:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 5:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 6:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 7:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 8:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 9:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 10:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 11:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 12:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 13:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 14:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 15:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 16:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 17:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 18:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case JUNIOR_1:
-                            currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                            switch (classroom){
-                                case 1:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    if (badges[grade][classroom] == null) {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 2:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 3:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 4:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 5:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 6:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 7:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 8:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 9:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 10:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 11:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 12:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 13:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 14:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 15:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 16:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 17:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 18:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case JUNIOR_2:
-                            currentView = layoutManager.findViewByPosition(JUNIOR_2);
-                            switch (classroom){
-                                case 1:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    if (badges[grade][classroom] == null) {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 2:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 3:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 4:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 5:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 6:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 7:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 8:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 9:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 10:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 11:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 12:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 13:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 14:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 15:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 16:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 17:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 18:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        case JUNIOR_3:
-                            currentView = layoutManager.findViewByPosition(JUNIOR_3);
-                            switch (classroom){
-                                case 1:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                    if (badges[grade][classroom] == null) {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 2:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 3:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                case 4:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 5:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 6:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 7:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 8:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 9:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 10:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 11:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 12:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 13:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 14:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 15:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 16:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 17:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                case 18:
-                                    imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                    if (badges[grade][classroom] == null){
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
-                                                .setBadgeText(classArray[grade][classroom]+"").setBadgeGravity(Gravity.TOP|Gravity.END)
-                                                .setGravityOffset(0,0,true);
-                                    } else {
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        badges[grade][classroom].setBadgeText(classArray[grade][classroom]+"");
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        default:
-                            break;
+                    imageView = (ImageView) currentView.findViewById(viewId);
+                    if (badges[grade][classroom] == null) {
+                        imageView.setImageResource(lightImageId);
+                        badges[grade][classroom] = new QBadgeView(MyApplication.getContext()).bindTarget(imageView)
+                                .setBadgeText(classArray[grade][classroom] + "").setBadgeGravity(Gravity.TOP | Gravity.END)
+                                .setGravityOffset(0, 0, true);
+                    } else {
+                        imageView.setImageResource(lightImageId);
+                        badges[grade][classroom].setBadgeText(classArray[grade][classroom] + "");
                     }
-                };
+                }
             }
         }
     }
@@ -2669,6 +1515,15 @@ public class SetRegulationActivity extends AppCompatActivity  {
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
                 if (classArray[grade][classroom] >= currentNum) classArray[grade][classroom]--;
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+            for (classroom = 1;classroom <= 18;classroom++){
                 editor.putInt(grade+""+classroom+"",classArray[grade][classroom]);
             }
         }
