@@ -58,7 +58,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
 
     private int viewId,lightImageId;
 
-    private boolean isJunior1Loaded,isJunior2Loaded,isJunior3Loaded = false;
+    private mClass aClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,15 +102,6 @@ public class SetRegulationActivity extends AppCompatActivity  {
             }
         });
 
-        /*导入班级布局*/
-        initClass();//初始化班级数据
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(this);//设置线性布局
-        recyclerView.setLayoutManager(layoutManager);//指定布局
-        adapter = new ClassAdapter(classList);//设置适配器
-        recyclerView.setAdapter(adapter);//加载适配器
-        initOnClickListener();//初始化点击事件
-
         /*读取检查顺序*/
         max = 0;
         SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
@@ -122,6 +113,14 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 }
             }
         }
+
+        /*导入班级布局*/
+        initClass();//初始化班级数据
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);//设置线性布局
+        recyclerView.setLayoutManager(layoutManager);//指定布局
+        adapter = new ClassAdapter(classList);//设置适配器
+        recyclerView.setAdapter(adapter);//加载适配器
 
         /*写入检查顺序初始化*/
         editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
@@ -147,12 +146,12 @@ public class SetRegulationActivity extends AppCompatActivity  {
     }
 
     private void initClass(){
-        mClass grade1 = new mClass("初一");
-        mClass grade2 = new mClass("初二");
-        mClass grade3 = new mClass("初三");
-        mClass grade4 = new mClass("高一");
-        mClass grade5 = new mClass("高二");
-        mClass grade6 = new mClass("高三");
+        mClass grade1 = new mClass("初一",classArray[JUNIOR_1],max);
+        mClass grade2 = new mClass("初二",classArray[JUNIOR_2],max);
+        mClass grade3 = new mClass("初三",classArray[JUNIOR_3],max);
+        mClass grade4 = new mClass("高一",classArray[SENIOR_1],max);
+        mClass grade5 = new mClass("高二",classArray[SENIOR_2],max);
+        mClass grade6 = new mClass("高三",classArray[SENIOR_3],max);
         classList.add(grade4);//考虑到本校实际情况，从高一开始导入布局
         classList.add(grade5);
         classList.add(grade6);
@@ -1513,7 +1512,8 @@ public class SetRegulationActivity extends AppCompatActivity  {
         super.onStop();
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
-                editor.putInt(grade+""+classroom+"",classArray[grade][classroom]);
+                aClass = classList.get(grade);
+                editor.putInt(grade+""+classroom+"",aClass.getClassArray(classroom));
             }
         }
         editor.apply();
