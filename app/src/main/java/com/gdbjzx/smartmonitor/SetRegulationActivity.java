@@ -773,217 +773,205 @@ public class SetRegulationActivity extends AppCompatActivity  {
                     }
                 });
 
-/*                recyclerView.setOnDragListener(new View.OnDragListener() {
+/*                currentView = layoutManager.findViewByPosition(JUNIOR_1);//设置当前年级为初一
+                imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onDrag(View view, DragEvent dragEvent) {
-                        Log.d("Count",adapter.getItemCount()+"");
-                        Log.d("isLoaded",isJunior1Loaded+"");
-                        if (adapter.getItemCount() == 3)
-                            if (!isJunior1Loaded){
-                                isJunior1Loaded = true;
-                                currentView = layoutManager.findViewByPosition(JUNIOR_1);//设置当前年级为初一
-                                imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
-                                        imageView.setImageResource(R.drawable.class_light_1);
-                                        setOnClickMethod(JUNIOR_1,1,R.drawable.class_1);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
-                                        imageView.setImageResource(R.drawable.class_light_2);
-                                        setOnClickMethod(JUNIOR_1,2,R.drawable.class_2);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
-                                        imageView.setImageResource(R.drawable.class_light_3);
-                                        setOnClickMethod(JUNIOR_1,3,R.drawable.class_3);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
-                                        imageView.setImageResource(R.drawable.class_light_4);
-                                        setOnClickMethod(JUNIOR_1,4,R.drawable.class_4);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
-                                        imageView.setImageResource(R.drawable.class_light_5);
-                                        setOnClickMethod(JUNIOR_1,5,R.drawable.class_5);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
-                                        imageView.setImageResource(R.drawable.class_light_6);
-                                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
-                                        imageView.setImageResource(R.drawable.class_light_7);
-                                        setOnClickMethod(JUNIOR_1,7,R.drawable.class_7);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
-                                        imageView.setImageResource(R.drawable.class_light_8);
-                                        setOnClickMethod(JUNIOR_1,8,R.drawable.class_8);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
-                                        imageView.setImageResource(R.drawable.class_light_9);
-                                        setOnClickMethod(JUNIOR_1,9,R.drawable.class_9);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
-                                        imageView.setImageResource(R.drawable.class_light_10);
-                                        setOnClickMethod(JUNIOR_1,10,R.drawable.class_10);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
-                                        imageView.setImageResource(R.drawable.class_light_11);
-                                        setOnClickMethod(JUNIOR_1,11,R.drawable.class_11);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
-                                        imageView.setImageResource(R.drawable.class_light_12);
-                                        setOnClickMethod(JUNIOR_1,12,R.drawable.class_12);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
-                                        imageView.setImageResource(R.drawable.class_light_13);
-                                        setOnClickMethod(JUNIOR_1,13,R.drawable.class_13);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
-                                        imageView.setImageResource(R.drawable.class_light_14);
-                                        setOnClickMethod(JUNIOR_1,14,R.drawable.class_14);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
-                                        imageView.setImageResource(R.drawable.class_light_15);
-                                        setOnClickMethod(JUNIOR_1,15,R.drawable.class_15);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
-                                        imageView.setImageResource(R.drawable.class_light_16);
-                                        setOnClickMethod(JUNIOR_1,16,R.drawable.class_16);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
-                                        imageView.setImageResource(R.drawable.class_light_17);
-                                        setOnClickMethod(JUNIOR_1,17,R.drawable.class_17);
-                                    }
-                                });
-                                imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
-                                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
-                                        imageView.setImageResource(R.drawable.class_light_18);
-                                        setOnClickMethod(JUNIOR_1,18,R.drawable.class_18);
-                                    }
-                                });
-                            }
-                            return true;
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_1);
+                        imageView.setImageResource(R.drawable.class_light_1);
+                        setOnClickMethod(JUNIOR_1,1,R.drawable.class_1);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_2);
+                        imageView.setImageResource(R.drawable.class_light_2);
+                        setOnClickMethod(JUNIOR_1,2,R.drawable.class_2);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_3);
+                        imageView.setImageResource(R.drawable.class_light_3);
+                        setOnClickMethod(JUNIOR_1,3,R.drawable.class_3);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_4);
+                        imageView.setImageResource(R.drawable.class_light_4);
+                        setOnClickMethod(JUNIOR_1,4,R.drawable.class_4);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_5);
+                        imageView.setImageResource(R.drawable.class_light_5);
+                        setOnClickMethod(JUNIOR_1,5,R.drawable.class_5);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_6);
+                        imageView.setImageResource(R.drawable.class_light_6);
+                        setOnClickMethod(JUNIOR_1,6,R.drawable.class_6);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_7);
+                        imageView.setImageResource(R.drawable.class_light_7);
+                        setOnClickMethod(JUNIOR_1,7,R.drawable.class_7);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_8);
+                        imageView.setImageResource(R.drawable.class_light_8);
+                        setOnClickMethod(JUNIOR_1,8,R.drawable.class_8);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_9);
+                        imageView.setImageResource(R.drawable.class_light_9);
+                        setOnClickMethod(JUNIOR_1,9,R.drawable.class_9);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_10);
+                        imageView.setImageResource(R.drawable.class_light_10);
+                        setOnClickMethod(JUNIOR_1,10,R.drawable.class_10);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_11);
+                        imageView.setImageResource(R.drawable.class_light_11);
+                        setOnClickMethod(JUNIOR_1,11,R.drawable.class_11);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_12);
+                        imageView.setImageResource(R.drawable.class_light_12);
+                        setOnClickMethod(JUNIOR_1,12,R.drawable.class_12);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_13);
+                        imageView.setImageResource(R.drawable.class_light_13);
+                        setOnClickMethod(JUNIOR_1,13,R.drawable.class_13);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_14);
+                        imageView.setImageResource(R.drawable.class_light_14);
+                        setOnClickMethod(JUNIOR_1,14,R.drawable.class_14);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_15);
+                        imageView.setImageResource(R.drawable.class_light_15);
+                        setOnClickMethod(JUNIOR_1,15,R.drawable.class_15);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_16);
+                        imageView.setImageResource(R.drawable.class_light_16);
+                        setOnClickMethod(JUNIOR_1,16,R.drawable.class_16);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_17);
+                        imageView.setImageResource(R.drawable.class_light_17);
+                        setOnClickMethod(JUNIOR_1,17,R.drawable.class_17);
+                    }
+                });
+                imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        currentView = layoutManager.findViewByPosition(JUNIOR_1);
+                        imageView = (ImageView) currentView.findViewById(R.id.class_18);
+                        imageView.setImageResource(R.drawable.class_light_18);
+                        setOnClickMethod(JUNIOR_1,18,R.drawable.class_18);
                     }
                 });
 
@@ -1391,6 +1379,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
                     }
                 });*/
                 renewButtonImage();
+
             }
         });
     }

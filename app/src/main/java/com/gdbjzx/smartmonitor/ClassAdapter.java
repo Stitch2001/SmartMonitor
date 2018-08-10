@@ -27,9 +27,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
 
     private List<mClass> mClassList;
 
-    private ImageView imageView;
-    private View currentView;
-
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
     private static final int SENIOR_3 = 2;
@@ -44,8 +41,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ViewHolder> 
     private int grade,classroom,max,currentNum;//用作循环变量
 
     private int viewId,lightImageId;
-
-    private OnItemClickListener mItemClickListener;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
