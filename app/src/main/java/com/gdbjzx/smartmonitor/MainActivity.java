@@ -1,11 +1,15 @@
 package com.gdbjzx.smartmonitor;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -15,13 +19,18 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,16 +39,53 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static final int LOGIN = 1;
-
     private static final int TAKE_PHOTO = 2;
 
+    private static final int SENIOR_1 = 0;
+    private static final int SENIOR_2 = 1;
+    private static final int SENIOR_3 = 2;
+    private static final int JUNIOR_1 = 3;
+    private static final int JUNIOR_2 = 4;
+    private static final int JUNIOR_3 = 5;
+
+    private static final int CAMERA = 0;
+    private static final int DELETE = 1;
+
+    private static final int LOADING = 0;
+    private static final int RENEW_VIEW = 1;
+
     private DrawerLayout mDrawerLayout;
-
     private NavigationView navigationView;
-
     private ImageView photoImage;
-
+    private TextView classNameView;
+    private FloatingActionButton takePhotoButton;
     private Uri imageUri;
+    private Bitmap[] bitmap = new Bitmap[55];
+
+    private int grade,classroom,currentGrade,currentRoom,number,max,takePhotoButtonMode = 1;
+    private int[] classArrayGrade = new int[55];
+    private int[] classArrayRoom = new int[55];
+
+    private Handler handler = new Handler(){
+
+        public void handleMessage(Message msg){
+            switch (msg.what){
+                case LOADING:
+                    Toast.makeText(MainActivity.this,"正在读取数据...",Toast.LENGTH_SHORT).show();
+                    break;
+                case RENEW_VIEW:
+                    if (bitmap[number] != null){
+                        photoImage.setImageBitmap(bitmap[number]);
+                        takePhotoButtonMode = DELETE;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                    }
+                    Toast.makeText(MainActivity.this,"数据读取完成",Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +93,84 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         photoImage = (ImageView) findViewById(R.id.photo_image);
+        classNameView = (TextView) findViewById(R.id.class_name);
 
+        /*清空图片内存列表*/
+        for (int i=1;i<=54;i++) bitmap[i] = null;
+
+        /*读取班级顺序并储存*/
+        final SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
+        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+            for (classroom = 1;classroom <= 18;classroom++){
+                number = pref.getInt(grade+""+classroom+"",0);
+                if (number != 0){
+                    classArrayGrade[number] = grade;
+                    classArrayRoom[number] = classroom;
+                    if (max<number) max = number;
+                }
+            }
+        }
+
+        /*非正常关闭恢复*/
+        final Boolean isError = pref.getBoolean("isError",false);
+        if (isError){
+            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("非正常关闭提醒")
+                    .setMessage("您上次的检查数据没有正常提交，是否继续检查？")
+                    .setCancelable(true);
+            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            /*提醒用户正在读取数据*/
+                            Message message = new Message();
+                            message.what = LOADING;
+                            handler.sendMessage(message);
+                            pref.getInt("CurrentNumber",number);
+                            for (int i=1;i<=54;i++){
+                                File classImage = new File(getExternalCacheDir(),i+".jpg");
+                                if (classImage.exists()){
+                                    if (Build.VERSION.SDK_INT >= 24){
+                                        imageUri = FileProvider.getUriForFile(MainActivity.this,"com.gdbjzx.smartmonitor"
+                                                ,classImage);
+                                    } else {
+                                        imageUri = Uri.fromFile(classImage);
+                                    }//获取图片的本地真实路径
+                                    try {
+                                        bitmap[number] = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                                    } catch (IOException e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                            /*发送消息，更新UI*/
+                            Message message1 = new Message();
+                            message1.what = RENEW_VIEW;
+                            handler.sendMessage(message1);
+                        }
+                    }).start();
+                }
+            });
+            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                    editor.putBoolean("isError",false).apply();
+                }
+            });
+            dialog.show();
+        }
+
+        /*设置Toolbar为默认ActionBar，设置图标*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_sort_by_size);
-        }//设置Toolbar为默认ActionBar，设置图标
+        }
 
         /*设置导航栏*/
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -84,29 +200,124 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*读取第一个班级并显示*/
+        number = 1;
+        currentGrade = classArrayGrade[number];
+        currentRoom = classArrayRoom[number];
+        switch (currentGrade){
+            case SENIOR_1:classNameView.setText("高一（"+currentRoom+"）班");break;
+            case SENIOR_2:classNameView.setText("高二（"+currentRoom+"）班");break;
+            case SENIOR_3:classNameView.setText("高三（"+currentRoom+"）班");break;
+            case JUNIOR_1:classNameView.setText("初一（"+currentRoom+"）班");break;
+            case JUNIOR_2:classNameView.setText("初二（"+currentRoom+"）班");break;
+            case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
+        }
+
+        takePhotoButtonMode = CAMERA;
         /*设置拍照按钮*/
-        FloatingActionButton takeFhotoButton = (FloatingActionButton) findViewById(R.id.take_photo);
-        takeFhotoButton.setOnClickListener(new View.OnClickListener() {
+        takePhotoButton = (FloatingActionButton) findViewById(R.id.take_photo);
+        takePhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                File outputImage = new File(getExternalCacheDir(),"1.jpg");//此处照片名称后续需要修改
-                try {
-                    if (outputImage.exists()){
-                        outputImage.delete();
+                if (takePhotoButtonMode == CAMERA){
+                    File classImage = new File(getExternalCacheDir(),number+".jpg");
+                    try {
+                        if (classImage.exists()){
+                            classImage.delete();
+                        }
+                        classImage.createNewFile();
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }//检测是否存在图片，存在则删除
+                    if (Build.VERSION.SDK_INT >= 24){
+                        imageUri = FileProvider.getUriForFile(MainActivity.this,"com.gdbjzx.smartmonitor",classImage);
+                    } else {
+                        imageUri = Uri.fromFile(classImage);
+                    }//获取图片的本地真实路径
+                    /*启动相机*/
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                    startActivityForResult(intent,TAKE_PHOTO);
+                } else if (takePhotoButtonMode == DELETE){
+                    /*清除照片*/
+                    bitmap[number] = null;
+                    new File(getExternalCacheDir(),number+".jpg").delete();
+                    photoImage.setImageResource(R.color.avoscloud_feedback_input_wrap_background);
+                    /*更改按钮*/
+                    takePhotoButtonMode = CAMERA;
+                    takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
+                }
+            }
+        });
+
+        /*设置扣分情况记录按钮*/
+        Button recordButton = (Button) findViewById(R.id.record_situations);
+        recordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*待添加*/
+            }
+        });
+
+        /*设置上一个/下一个班级按钮*/
+        FloatingActionButton lastClassButton = (FloatingActionButton) findViewById(R.id.last_class);
+        lastClassButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (number > 1){//判断前面是否有班级
+                    /*更新文字*/
+                    number--;
+                    currentGrade = classArrayGrade[number];
+                    currentRoom = classArrayRoom[number];
+                    switch (currentGrade){
+                        case SENIOR_1:classNameView.setText("高一（"+currentRoom+"）班");break;
+                        case SENIOR_2:classNameView.setText("高二（"+currentRoom+"）班");break;
+                        case SENIOR_3:classNameView.setText("高三（"+currentRoom+"）班");break;
+                        case JUNIOR_1:classNameView.setText("初一（"+currentRoom+"）班");break;
+                        case JUNIOR_2:classNameView.setText("初二（"+currentRoom+"）班");break;
+                        case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
-                    outputImage.createNewFile();
-                } catch (IOException e){
-                    e.printStackTrace();
-                }//检测是否存在图片，存在则删除
-                if (Build.VERSION.SDK_INT >= 24){
-                    imageUri = FileProvider.getUriForFile(MainActivity.this,"com.gdbjzx.smartmonitor",outputImage);
-                } else {
-                    imageUri = Uri.fromFile(outputImage);
-                }//获取图片的本地真实路径
-                /*启动相机*/
-                Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
-                startActivityForResult(intent,TAKE_PHOTO);
+                    /*更新图片和按钮*/
+                    if (bitmap[number] != null) {
+                        photoImage.setImageBitmap(bitmap[number]);
+                        takePhotoButtonMode = DELETE;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                    } else {
+                        photoImage.setImageResource(R.color.avoscloud_feedback_input_wrap_background);
+                        takePhotoButtonMode = CAMERA;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
+                    }
+                }
+            }
+        });
+        FloatingActionButton nextClassButton = (FloatingActionButton) findViewById(R.id.next_class);
+        nextClassButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (number < max){//判断后面是否有班级
+                    /*更新文字*/
+                    number++;
+                    currentGrade = classArrayGrade[number];
+                    currentRoom = classArrayRoom[number];
+                    switch (currentGrade){
+                        case SENIOR_1:classNameView.setText("高一（"+currentRoom+"）班");break;
+                        case SENIOR_2:classNameView.setText("高二（"+currentRoom+"）班");break;
+                        case SENIOR_3:classNameView.setText("高三（"+currentRoom+"）班");break;
+                        case JUNIOR_1:classNameView.setText("初一（"+currentRoom+"）班");break;
+                        case JUNIOR_2:classNameView.setText("初二（"+currentRoom+"）班");break;
+                        case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
+                    }
+                    /*更新图片和按钮*/
+                    if (bitmap[number] != null) {
+                        photoImage.setImageBitmap(bitmap[number]);
+                        takePhotoButtonMode = DELETE;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                    } else {
+                        photoImage.setImageResource(R.color.avoscloud_feedback_input_wrap_background);
+                        takePhotoButtonMode = CAMERA;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
+                    }
+                }
             }
         });
 
@@ -159,9 +370,15 @@ public class MainActivity extends AppCompatActivity {
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK){
                     try {
-                        //显示拍摄的照片
-                        Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                        photoImage.setImageBitmap(bitmap);
+                        /*显示拍摄的照片*/
+                        bitmap[number] = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                        photoImage.setImageBitmap(bitmap[number]);
+                        /*更新按钮*/
+                        takePhotoButtonMode = DELETE;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                        /*实时保存状态*/
+                        SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                        editor.putBoolean("isError",true).putInt("CurrentNumber",number).apply();
                     } catch (FileNotFoundException e){
                         e.printStackTrace();
                         Snackbar.make(photoImage,"图片未找到",Snackbar.LENGTH_SHORT);
