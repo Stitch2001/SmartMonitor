@@ -16,7 +16,7 @@
 
     <!-- 基础模块 END -->
     <application
-        android:name="com.gdbjzx.smartmonitor.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="智慧纪检"
@@ -63,6 +63,7 @@
         </provider>
 
         <activity android:name=".SetRegulationActivity" />
+        <activity android:name=".RecordSituationActivity" />
     </application>
 
 </manifest>

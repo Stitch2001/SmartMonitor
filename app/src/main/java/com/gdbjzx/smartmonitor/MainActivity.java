@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOGIN = 1;
     private static final int TAKE_PHOTO = 2;
+    private static final int RECORD_SITUATION = 3;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -102,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         photoImage = (ImageView) findViewById(R.id.photo_image);
         classNameView = (TextView) findViewById(R.id.class_name);
 
@@ -157,6 +157,9 @@ public class MainActivity extends AppCompatActivity {
             dialog.show();
         }
 
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         /*设置Toolbar为默认ActionBar，设置图标*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -180,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
                         editor.putBoolean("isAuto",false);
                         editor.apply();
                         /*阻止自动登录*/
-                        intent = new Intent(MainActivity.this,LoginActivity.class);
+                        intent = new Intent(MyApplication.getContext(),LoginActivity.class);
                         startActivityForResult(intent,LOGIN);
                         break;
                     case R.id.nav_set_regulation:
-                        intent = new Intent(MainActivity.this,SetRegulationActivity.class);
+                        intent = new Intent(MyApplication.getContext(),SetRegulationActivity.class);
                         startActivity(intent);
                         break;
                     default:
@@ -193,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
         /*读取第一个班级并显示*/
         number = 1;
@@ -248,7 +252,8 @@ public class MainActivity extends AppCompatActivity {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*待添加*/
+                Intent intent = new Intent(MyApplication.getContext(),RecordSituationActivity.class);
+                startActivityForResult(intent,RECORD_SITUATION);
             }
         });
 
@@ -332,9 +337,10 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         navigationView.setCheckedItem(R.id.nav_monitor);//设置“检查”高亮
     }
 
@@ -355,6 +361,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return true;
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -373,6 +380,11 @@ public class MainActivity extends AppCompatActivity {
                     /*实时保存状态*/
                     SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
                     editor.putBoolean("isError",true).putInt("CurrentNumber",number).apply();
+                }
+                break;
+            case RECORD_SITUATION:
+                if (resultCode == RESULT_OK){
+
                 }
                 break;
             default:

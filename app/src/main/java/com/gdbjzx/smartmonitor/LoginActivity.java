@@ -30,18 +30,22 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
+
         Button loginButton = (Button) findViewById(R.id.login_button);
         final CheckBox rememberPasswordCheck = (CheckBox) findViewById(R.id.remember_password_check);
         final CheckBox autoLoginCheck = (CheckBox) findViewById(R.id.auto_login_check);
         final EditText idText = (EditText) findViewById(R.id.id_text);
         final EditText passwordText = (EditText) findViewById(R.id.password_text);
+
+        /*设置Toolbar为默认ActionBar，设置图标*/
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
-        }//设置Toolbar为默认ActionBar，设置图标
-        SharedPreferences sharedPreferences = getSharedPreferences("pw",MODE_PRIVATE);//打开存储文件
+        }
+
+        SharedPreferences sharedPreferences = getSharedPreferences("pw",MODE_PRIVATE);
         /*读取账号密码*/
         boolean isRemember = sharedPreferences.getBoolean("isRemember",true);
         if (isRemember){
@@ -51,9 +55,11 @@ public class LoginActivity extends AppCompatActivity {
             passwordText.setText(password);
             rememberPasswordCheck.setChecked(true);
         }
-        /*读取账号密码*/
+
         Snackbar.make(loginButton,"请先登录",Snackbar.LENGTH_SHORT).show();
         islogined = RESULT_CANCELED;
+
+        /*登录操作*/
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +136,8 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+
+        /*若勾选了自动登录，则自动勾选记住密码*/
         autoLoginCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
