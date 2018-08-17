@@ -253,6 +253,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MyApplication.getContext(),RecordSituationActivity.class);
+                intent.putExtra("number",number);
+                intent.putExtra("currentGrade",currentGrade);
+                intent.putExtra("currentRoom",currentRoom);
                 startActivityForResult(intent,RECORD_SITUATION);
             }
         });
