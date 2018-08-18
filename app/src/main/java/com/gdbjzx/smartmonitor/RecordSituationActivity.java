@@ -3,13 +3,17 @@ package com.gdbjzx.smartmonitor;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -81,7 +85,7 @@ public class RecordSituationActivity extends AppCompatActivity {
 
         /*设置点击事件*/
         String[] situations = new String[]
-                { "使用手机", "玩手机", "戴耳机", "全班吵闹" };
+                { "使用手机", "玩手机","玩游戏", "戴耳机", "全班吵闹","未写应到实到" };
         ArrayAdapter<String> situationsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, situations);
         final EditText locationYText = (EditText) findViewById(R.id.location_y);
         final EditText locationXText = (EditText) findViewById(R.id.location_x);
@@ -93,6 +97,8 @@ public class RecordSituationActivity extends AppCompatActivity {
         final AutoCompleteTextView event2Text = (AutoCompleteTextView) findViewById(R.id.event2);
         event2Text.setAdapter(situationsAdapter);
         final EditText score2Text = (EditText) findViewById(R.id.score2);
+
+        /*设置“+”按钮的点击事件*/
         FloatingActionButton submitButton = (FloatingActionButton) findViewById(R.id.submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,8 +120,13 @@ public class RecordSituationActivity extends AppCompatActivity {
                 if (!scoreString.isEmpty()) {
                     score = Integer.parseInt(scoreString);
                 } else score = 0;
-                String location = locationText.getText().toString();
                 String personNumber = personNumberText.getText().toString();
+                String location;
+                if (personNumber.isEmpty()){
+                    location = locationText.getText().toString();//此处的位置没有包含人数
+                } else {
+                    location = locationText.getText().toString()+personNumber+"人";//此处的位置包含了人数
+                }//判断是否填写人数，没有填写人数则不加上去
                 String event2 = event2Text.getText().toString();
                 if (!score2String.isEmpty()) {
                     score2 = Integer.parseInt(score2String);
@@ -131,7 +142,7 @@ public class RecordSituationActivity extends AppCompatActivity {
                 }
                 if ((location != "") && (event2 != "") && (score2>0)){
                     listNum++;
-                    situationList.add(new mSituation(location+personNumber+"人",event2,score2));
+                    situationList.add(new mSituation(location,event2,score2));
                     adapter.notifyDataSetChanged();
                     locationText.setText("");
                     personNumberText.setText("");
@@ -140,12 +151,6 @@ public class RecordSituationActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 
     @Override
@@ -159,4 +164,17 @@ public class RecordSituationActivity extends AppCompatActivity {
         }
         editor.putInt("listNum"+number,listNum).apply();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
 }

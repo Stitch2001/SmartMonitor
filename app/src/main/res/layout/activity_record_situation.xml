@@ -17,11 +17,11 @@
         android:id="@+id/class_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#87000000"
         android:layout_below="@id/toolbar"
         android:gravity="center_horizontal"
         android:textSize="24sp"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:textColor="#000000"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/situations"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="预设"
             android:textSize="14sp"
-            android:textColor="#54000000"/>
+            android:textColor="#87000000"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,45 +55,49 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="第"
-                android:textColor="#87000000"
                 android:layout_weight="1"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000"/>
 
             <EditText
                 android:id="@+id/location_y"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#87000000"
-                android:ems="1"
                 android:inputType="numberDecimal"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:lines="1"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/location_x"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="列第"
-                android:textColor="#87000000"
                 android:layout_weight="1"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000"/>
 
             <EditText
                 android:id="@+id/location_x"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="1"
-                android:textColor="#87000000"
                 android:layout_weight="1"
                 android:inputType="numberDecimal"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:lines="1"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/event"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="排"
-                android:textColor="#87000000"
                 android:layout_weight="1"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000"/>
 
             <AutoCompleteTextView
                 android:id="@+id/event"
@@ -101,35 +105,40 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="100"
                 android:hint="事件"
-                android:completionThreshold="0"
-                android:textColor="#87000000"
-                android:textSize="16sp"/>
+                android:completionThreshold="1"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/score"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="扣"
-                android:textColor="#87000000"
                 android:layout_weight="1"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000" />
 
             <EditText
                 android:id="@+id/score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="1"
-                android:textColor="#87000000"
                 android:layout_weight="1"
                 android:inputType="numberDecimal"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:lines="1"
+                android:imeOptions="actionDone"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="分"
-                android:textColor="#87000000"
                 android:layout_weight="1"
-                android:textSize="16sp"/>
+                android:textSize="16sp"
+                android:textColor="#000000"/>
 
         </LinearLayout>
 
@@ -138,7 +147,7 @@
             android:layout_height="wrap_content"
             android:text="自定义"
             android:textSize="14sp"
-            android:textColor="#54000000"/>
+            android:textColor="#87000000"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -150,63 +159,73 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="10"
-                android:textColor="#87000000"
                 android:textSize="16sp"
-                android:hint="位置"/>
+                android:textColor="#000000"
+                android:hint="位置"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/person_number"/>
 
             <EditText
                 android:id="@+id/person_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="10"
-                android:textColor="#87000000"
+                android:layout_weight="13"
                 android:ems="1"
                 android:inputType="numberDecimal"
                 android:textSize="16sp"
-                android:hint="人数"/>
+                android:hint="人数"
+                android:lines="1"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/event2"
+                android:textColor="#000000"/>
 
             <AutoCompleteTextView
                 android:id="@+id/event2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="100"
-                android:textColor="#87000000"
                 android:hint="事件"
-                android:completionThreshold="0"
-                android:textSize="16sp" />
+                android:completionThreshold="1"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:lines="1"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/score2" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#87000000"
                 android:text="扣"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="#000000" />
 
             <EditText
                 android:id="@+id/score2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#87000000"
                 android:ems="1"
                 android:inputType="numberDecimal"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:lines="1"
+                android:imeOptions="actionDone" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#87000000"
                 android:text="分"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textColor="#000000" />
 
         </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/submit"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="8dp"
             android:clickable="true"

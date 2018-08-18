@@ -361,6 +361,7 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
             default:
+                break;
         }
         return true;
     }
