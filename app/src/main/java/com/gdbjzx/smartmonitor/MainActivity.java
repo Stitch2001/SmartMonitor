@@ -150,7 +150,11 @@ public class MainActivity extends AppCompatActivity {
                         classImage = new File(getExternalCacheDir(),number+".jpg");
                         if (classImage.exists()) classImage.delete();
                     }
-                    SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                    /*清楚内存中的扣分情况数据*/
+                    SharedPreferences.Editor editor = getSharedPreferences("RecordSituation",MODE_PRIVATE).edit();
+                    editor.clear().apply();
+                    /*清除非正常关闭标记*/
+                    editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
                     editor.putBoolean("isError",false).apply();
                 }
             });
@@ -261,10 +265,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /*设置上一个/下一个班级按钮*/
-        FloatingActionButton lastClassButton = (FloatingActionButton) findViewById(R.id.last_class);
+        final FloatingActionButton lastClassButton = (FloatingActionButton) findViewById(R.id.last_class);
+        final FloatingActionButton nextClassButton = (FloatingActionButton) findViewById(R.id.next_class);
         lastClassButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                nextClassButton.setImageResource(android.R.drawable.ic_media_ff);
                 if (number > 1){//判断前面是否有班级
                     /*更新文字*/
                     number--;
@@ -289,13 +295,18 @@ public class MainActivity extends AppCompatActivity {
                         takePhotoButtonMode = CAMERA;
                         takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
                     }
+                    if (number == 1){
+                        /*设置按钮不可用*/
+                        lastClassButton.setClickable(false);
+                    }
                 }
             }
         });
-        FloatingActionButton nextClassButton = (FloatingActionButton) findViewById(R.id.next_class);
         nextClassButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*设置“上一个”按钮可用*/
+                lastClassButton.setClickable(true);
                 if (number < max){//判断后面是否有班级
                     /*更新文字*/
                     number++;
@@ -320,6 +331,13 @@ public class MainActivity extends AppCompatActivity {
                         takePhotoButtonMode = CAMERA;
                         takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
                     }
+                    if (number == max){
+                        /*将按钮设置为提交按钮*/
+                        nextClassButton.setImageResource(R.drawable.tick);
+                    }
+                } else {
+                    /*提醒检查情况*/
+                    /*开始录入应到实到数据*/
                 }
             }
         });
