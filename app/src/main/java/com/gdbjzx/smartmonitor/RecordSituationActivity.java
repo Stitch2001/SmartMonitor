@@ -42,6 +42,7 @@ public class RecordSituationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_situation);
+        setResult(RESULT_OK);
 
         /*设置Toolbar为默认ActionBar，设置图标*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

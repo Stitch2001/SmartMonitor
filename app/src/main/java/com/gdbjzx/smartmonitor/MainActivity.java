@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOGIN = 1;
     private static final int TAKE_PHOTO = 2;
     private static final int RECORD_SITUATION = 3;
+    private static final int NOTIFY_CHECKING_SITUATION = 4;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView classNameView;
     private FloatingActionButton takePhotoButton;
     private Uri imageUri;
+    private FloatingActionButton lastClassButton;
+    private FloatingActionButton nextClassButton;
 
     private int grade,classroom,currentGrade,currentRoom,number,max,takePhotoButtonMode = 1;
     private int[] classArrayGrade = new int[55];
@@ -87,10 +90,14 @@ public class MainActivity extends AppCompatActivity {
                         case JUNIOR_2:classNameView.setText("初二（"+currentRoom+"）班");break;
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
-                    classImage = new File(getExternalCacheDir(),number+".jpg");
-                    showImage(ShowMode.SHOW_IMAGE);
-                    takePhotoButtonMode = DELETE;
-                    takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                    if (number == 1) lastClassButton.setClickable(false);
+                    if (number == max) nextClassButton.setImageResource(R.drawable.tick);
+                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    if (classImage.exists()){
+                        showImage(ShowMode.SHOW_IMAGE);
+                        takePhotoButtonMode = DELETE;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                    }
                     Toast.makeText(MainActivity.this,"数据读取完成",Toast.LENGTH_SHORT).show();
                     break;
                 default:
@@ -133,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             /*提醒用户正在读取数据*/
-                            pref.getInt("CurrentNumber",number);
+                            number = pref.getInt("CurrentNumber",1);
                             /*发送消息，更新UI*/
                             Message message = new Message();
                             message.what = RENEW_VIEW;
@@ -146,9 +153,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     /*清除内存中图片*/
-                    for (int number = 1;number<=18;number++){
-                        classImage = new File(getExternalCacheDir(),number+".jpg");
-                        if (classImage.exists()) classImage.delete();
+                    for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+                        for (classroom = 1;classroom <= 18;classroom++){
+                            classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                            if (classImage.exists()) classImage.delete();
+                        }
                     }
                     /*清楚内存中的扣分情况数据*/
                     SharedPreferences.Editor editor = getSharedPreferences("RecordSituation",MODE_PRIVATE).edit();
@@ -222,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (takePhotoButtonMode == CAMERA){
-                    classImage = new File(getExternalCacheDir(),number+".jpg");
+                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
                     try {
                         if (classImage.exists()){
                             classImage.delete();
@@ -242,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(intent,TAKE_PHOTO);
                 } else if (takePhotoButtonMode == DELETE){
                     /*清除照片*/
-                    new File(getExternalCacheDir(),number+".jpg").delete();
+                    new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg").delete();
                     showImage(ShowMode.SHOW_BLANK);
                     /*更改按钮*/
                     takePhotoButtonMode = CAMERA;
@@ -265,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /*设置上一个/下一个班级按钮*/
-        final FloatingActionButton lastClassButton = (FloatingActionButton) findViewById(R.id.last_class);
-        final FloatingActionButton nextClassButton = (FloatingActionButton) findViewById(R.id.next_class);
+        lastClassButton = (FloatingActionButton) findViewById(R.id.last_class);
+        nextClassButton = (FloatingActionButton) findViewById(R.id.next_class);
         lastClassButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -285,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
                     /*更新图片和按钮*/
-                    classImage = new File(getExternalCacheDir(),number+".jpg");
+                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
                     if (classImage.exists()) {
                         showImage(ShowMode.SHOW_IMAGE);
                         takePhotoButtonMode = DELETE;
@@ -321,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
                     /*更新图片和按钮*/
-                    classImage = new File(getExternalCacheDir(),number+".jpg");
+                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
                     if (classImage.exists()) {
                         showImage(ShowMode.SHOW_IMAGE);
                         takePhotoButtonMode = DELETE;
@@ -336,8 +345,9 @@ public class MainActivity extends AppCompatActivity {
                         nextClassButton.setImageResource(R.drawable.tick);
                     }
                 } else {
-                    /*提醒检查情况*/
-                    /*开始录入应到实到数据*/
+                    /*检查完成*/
+                    Intent intent = new Intent(MainActivity.this,NotifyCheckingSituationActivity.class);
+                    startActivityForResult(intent,NOTIFY_CHECKING_SITUATION);
                 }
             }
         });
@@ -393,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK){
-                    classImage = new File(getExternalCacheDir(),number+".jpg");
+                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
                     /*显示拍摄的照片*/
                     showImage(ShowMode.SHOW_IMAGE);
                     /*更新按钮*/
@@ -405,11 +415,44 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case RECORD_SITUATION:
+                if (resultCode == RESULT_OK){ }
+                break;
+            case NOTIFY_CHECKING_SITUATION:
                 if (resultCode == RESULT_OK){
-
+                    /*开始录入应到实到数据*/
+                } else if (resultCode == RESULT_CANCELED) {
+                    /*重新录入本班级数据*/
+                    currentGrade = data.getIntExtra("currentGrade",0);
+                    currentRoom = data.getIntExtra("currentRoom",1);
+                    /*显示数据*/
+                    for (int i = 1;i <= 54;i++){
+                        if ( (currentGrade == classArrayGrade[i]) && (currentRoom == classArrayRoom[i]) ) number = i;
+                    }
+                    switch (currentGrade){
+                        case SENIOR_1:classNameView.setText("高一（"+currentRoom+"）班");break;
+                        case SENIOR_2:classNameView.setText("高二（"+currentRoom+"）班");break;
+                        case SENIOR_3:classNameView.setText("高三（"+currentRoom+"）班");break;
+                        case JUNIOR_1:classNameView.setText("初一（"+currentRoom+"）班");break;
+                        case JUNIOR_2:classNameView.setText("初二（"+currentRoom+"）班");break;
+                        case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
+                    }
+                    /*更新图片和按钮*/
+                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    if (classImage.exists()) {
+                        showImage(ShowMode.SHOW_IMAGE);
+                        takePhotoButtonMode = DELETE;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
+                    } else {
+                        showImage(ShowMode.SHOW_BLANK);
+                        takePhotoButtonMode = CAMERA;
+                        takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
+                    }
+                    if (number == 1) lastClassButton.setClickable(false); //设置“上一个”按钮不可用
+                    if (number < max) nextClassButton.setImageResource(android.R.drawable.ic_media_ff);//将按钮设置为“下一个”按钮
                 }
                 break;
             default:
+                break;
         }
     }
 

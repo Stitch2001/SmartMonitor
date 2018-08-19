@@ -28,7 +28,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_1" />
+            app:srcCompat="@drawable/class_light_1" />
 
         <ImageView
             android:id="@+id/class_2"
@@ -37,7 +37,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_2" />
+            app:srcCompat="@drawable/class_light_2" />
 
         <ImageView
             android:id="@+id/class_3"
@@ -46,7 +46,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_3" />
+            app:srcCompat="@drawable/class_light_3" />
 
         <ImageView
             android:id="@+id/class_4"
@@ -55,7 +55,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_4" />
+            app:srcCompat="@drawable/class_light_4" />
 
         <ImageView
             android:id="@+id/class_5"
@@ -64,7 +64,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_5" />
+            app:srcCompat="@drawable/class_light_5" />
 
         <ImageView
             android:id="@+id/class_6"
@@ -73,7 +73,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_6" />
+            app:srcCompat="@drawable/class_light_6" />
 
     </LinearLayout>
 
@@ -91,7 +91,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_7" />
+            app:srcCompat="@drawable/class_light_7" />
 
         <ImageView
             android:id="@+id/class_8"
@@ -100,7 +100,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_8" />
+            app:srcCompat="@drawable/class_light_8" />
 
         <ImageView
             android:id="@+id/class_9"
@@ -109,7 +109,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_9" />
+            app:srcCompat="@drawable/class_light_9" />
 
         <ImageView
             android:id="@+id/class_10"
@@ -118,7 +118,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_10" />
+            app:srcCompat="@drawable/class_light_10" />
 
         <ImageView
             android:id="@+id/class_11"
@@ -127,7 +127,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_11" />
+            app:srcCompat="@drawable/class_light_11" />
 
         <ImageView
             android:id="@+id/class_12"
@@ -136,7 +136,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_12" />
+            app:srcCompat="@drawable/class_light_12" />
 
     </LinearLayout>
 
@@ -154,7 +154,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_13" />
+            app:srcCompat="@drawable/class_light_13" />
 
         <ImageView
             android:id="@+id/class_14"
@@ -163,7 +163,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_14" />
+            app:srcCompat="@drawable/class_light_14" />
 
         <ImageView
             android:id="@+id/class_15"
@@ -172,7 +172,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_15" />
+            app:srcCompat="@drawable/class_light_15" />
 
         <ImageView
             android:id="@+id/class_16"
@@ -181,7 +181,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_16" />
+            app:srcCompat="@drawable/class_light_16" />
 
         <ImageView
             android:id="@+id/class_17"
@@ -190,7 +190,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_17" />
+            app:srcCompat="@drawable/class_light_17" />
 
         <ImageView
             android:id="@+id/class_18"
@@ -199,7 +199,7 @@
             android:layout_margin="12dp"
             android:layout_weight="1"
             android:clickable="true"
-            app:srcCompat="@drawable/class_18" />
+            app:srcCompat="@drawable/class_light_18" />
 
     </LinearLayout>
 </LinearLayout>
