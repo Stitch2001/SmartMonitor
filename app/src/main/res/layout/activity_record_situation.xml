@@ -187,6 +187,7 @@
                 android:layout_weight="100"
                 android:hint="事件"
                 android:completionThreshold="1"
+                android:singleLine="true"
                 android:textSize="16sp"
                 android:textColor="#000000"
                 android:lines="1"

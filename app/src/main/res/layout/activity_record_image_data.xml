@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.gdbjzx.smartmonitor.MainActivity"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@id/class_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="40dp"
+            android:alpha="87"
+            android:text="高一（1）班"
+            android:textColor="#000"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <ImageView
+            android:id="@id/photo_image"
+            android:layout_width="306dp"
+            android:layout_height="169dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/class_name"
+            app:layout_constraintVertical_bias="0.050000012"
+            app:srcCompat="@color/avoscloud_feedback_input_wrap_background" />
+
+    <android.support.percent.PercentFrameLayout
+        android:id="@+id/percentFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photo_image"
+        app:layout_constraintVertical_bias="0.0">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_gravity="left|top"
+            app:layout_heightPercent="50%"
+            app:layout_widthPercent="50%">>
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/ought"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="应到"
+                android:inputType="number"
+                android:selectAllOnFocus="false"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/fact"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_gravity="right|top"
+            app:layout_heightPercent="50%"
+            app:layout_widthPercent="50%">>
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/fact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="实到"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/leave"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_gravity="left|bottom"
+            app:layout_heightPercent="50%"
+            app:layout_widthPercent="50%">>
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/leave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请假"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:imeOptions="actionNext"
+                android:nextFocusForward="@id/temporary"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_gravity="right|bottom"
+            app:layout_heightPercent="50%"
+            app:layout_widthPercent="50%">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/temporary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="临休"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:imeOptions="actionDone"/>
+        </android.support.design.widget.TextInputLayout>
+
+    </android.support.percent.PercentFrameLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/percentFrameLayout">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@id/last_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="28dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:src="@android:drawable/ic_media_rew" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/next_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="28dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            app:srcCompat="@android:drawable/ic_media_ff" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar" />
+
+</android.support.constraint.ConstraintLayout>

@@ -157,7 +157,7 @@ public class RecordSituationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = getSharedPreferences("RecordSituation",MODE_PRIVATE).edit();
         if (listNum > 0) editor.putBoolean("isError",true).putInt("CurrentNumber",number).apply();//非正常关闭标记
         editor = getSharedPreferences("RecordSituation",MODE_PRIVATE).edit();
             for (int i = 1;i <= listNum;i++){

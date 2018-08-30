@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVUser;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int TAKE_PHOTO = 2;
     private static final int RECORD_SITUATION = 3;
     private static final int NOTIFY_CHECKING_SITUATION = 4;
+    private static final int RECORD_IMAGE_DATA = 5;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -196,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                         editor.putBoolean("isAuto",false);
                         editor.apply();
                         /*阻止自动登录*/
+                        AVUser.logOut();
                         intent = new Intent(MyApplication.getContext(),LoginActivity.class);
                         startActivityForResult(intent,LOGIN);
                         break;
@@ -353,19 +356,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /*强制登录*/
-        Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-        startActivityForResult(intent,LOGIN);
+        AVUser currentUser = AVUser.getCurrentUser();
+        if (currentUser == null){
+            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            startActivityForResult(intent,LOGIN);
+        }
 
-        /*AVObject testObject = new AVObject("TestObject");
-        testObject.put("words","这里是北中纪小检");
-        testObject.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(AVException e) {
-                if(e == null){
-                    Log.d("saved","success!");
-                }
-            }
-        });*/
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -415,11 +411,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case RECORD_SITUATION:
-                if (resultCode == RESULT_OK){ }
                 break;
             case NOTIFY_CHECKING_SITUATION:
                 if (resultCode == RESULT_OK){
                     /*开始录入应到实到数据*/
+                    Intent intent = new Intent(MainActivity.this,RecordImageDataActivity.class);
+                    startActivityForResult(intent,RECORD_IMAGE_DATA);
                 } else if (resultCode == RESULT_CANCELED) {
                     /*重新录入本班级数据*/
                     currentGrade = data.getIntExtra("currentGrade",0);
@@ -450,6 +447,8 @@ public class MainActivity extends AppCompatActivity {
                     if (number == 1) lastClassButton.setClickable(false); //设置“上一个”按钮不可用
                     if (number < max) nextClassButton.setImageResource(android.R.drawable.ic_media_ff);//将按钮设置为“下一个”按钮
                 }
+                break;
+            case RECORD_IMAGE_DATA:
                 break;
             default:
                 break;

@@ -42,7 +42,7 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notify_checking_situation);
-        setResult(RESULT_OK);
+        final ImageView submitData = (ImageView) findViewById(R.id.submit_data);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         /*设置Toolbar为默认ActionBar，设置图标*/
@@ -74,21 +74,25 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
         recyclerView.post(new Runnable() {
             @Override
             public void run() {
-                if (leftClass >0)
+                if (leftClass >0){
                     Toast.makeText(NotifyCheckingSituationActivity.this,"您还有"+leftClass+"个班级未检查",Toast.LENGTH_SHORT)
                             .show();
+                    submitData.setClickable(false);
+                    submitData.setImageResource(R.color.avoscloud_feedback_text_gray);
+                }
             }
         });
 
         /*完成检查并提交按钮*/
-        ImageView submitData = (ImageView) findViewById(R.id.submit_data);
         submitData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*开始录入应到实到数据*/
+                setResult(RESULT_OK);
                 finish();
             }
         });
+        setResult(RESULT_FIRST_USER);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,7 +102,7 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
         return true;
     }
 
-    /*点击按钮出现左侧菜单*/
+    /*点击按钮返回菜单*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -110,6 +114,13 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
         }
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initClassItem(){

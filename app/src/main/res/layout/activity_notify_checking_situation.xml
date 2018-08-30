@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="完成检查并提交"
+        android:text="完成检查，开始提交"
         android:textColor="#FFF"
         android:textSize="20sp"
         android:layout_marginBottom="10dp"/>
