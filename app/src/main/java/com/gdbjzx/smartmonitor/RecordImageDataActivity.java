@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,9 +19,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +33,8 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.ProgressCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,7 +42,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import id.zelory.compressor.Compressor;
 
@@ -51,6 +59,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
 
     private static final int UPLOAD_FAILED = 0;
     private static final int UPLOAD_OK = 1;
+    private static final int UPDATE_PROGRESS = 2;
 
     private ImageView photoImage;
     private TextView classNameView;
@@ -66,6 +75,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private int[] classArrayGrade = new int[55];
     private int[] classArrayRoom = new int[55];
     private boolean isUploadedclass = false,isUploadedSituations = false,isUploadedImage = false;
+    private AVException e = null;
     private File classImage;
 
     private Handler handler = new Handler() {
@@ -73,8 +83,8 @@ public class RecordImageDataActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case UPLOAD_OK:
+                    progressBar.setProgress(100);
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(RecordImageDataActivity.this,"上传成功",Toast.LENGTH_SHORT);
                     setResult(RESULT_OK);
                     finish();
                     break;
@@ -230,6 +240,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         nextClassButton.setImageResource(R.drawable.tick);
                     }
                 } else {
+                    saveData(pref);//保存应到实到数据
                     AlertDialog.Builder dialog = new AlertDialog.Builder(RecordImageDataActivity.this)
                             .setTitle("提示")
                             .setMessage("确认提交？")
@@ -244,6 +255,17 @@ public class RecordImageDataActivity extends AppCompatActivity {
                     dialog.setNegativeButton("取消",null);
                     dialog.show();
                 }
+            }
+        });
+
+        /*设置在输入完临休数据后自动跳转到下一个班级*/
+        temporary.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE){
+                    nextClassButton.callOnClick();
+                }
+                return true;
             }
         });
     }
@@ -277,94 +299,114 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private boolean uploadData(final SharedPreferences pref){
         progressBar.setVisibility(View.VISIBLE);
         /*开始提交数据*/
+        final Handler updateDataHandler = new Handler(){
+            public void handleMessage(Message msg){
+                progressBar.setProgress(msg.arg1);
+                Log.d("msg.arg1",msg.arg1+"");
+            }
+        };
         new Thread(new Runnable() {
+            Runnable updateProgressThread;
             @Override
             public void run() {
-                final Message message = new Message();
-                final AVObject classData = new AVObject("ClassData");
-                AVObject situationData = new AVObject("SituationData");
+                Message message = new Message();
+                ArrayList<AVObject> classDataList = new ArrayList<>();
+                ArrayList<AVObject> situationDataList = new ArrayList<>();
+                ArrayList<AVFile> classImageList = new ArrayList<>();
                 for (number = 1;number<=max;number++){
-                    /*上传应到实到数据*/
+                    /*录入应到实到数据*/
+                    AVObject classData = new AVObject("ClassData");
                     classData.put("grade",classArrayGrade[number]);
                     classData.put("classroom",classArrayRoom[number]);
-                    classData.put("ought",pref.getInt("leave"+number,0));
+                    classData.put("ought",pref.getInt("ought"+number,0));
                     classData.put("fact",pref.getInt("fact"+number,0));
                     classData.put("leave",pref.getInt("leave"+number,0));
                     classData.put("temporary",pref.getInt("temporary"+number,0));
-                    classData.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            if (e == null){
-                                if (number == max){
-                                    isUploadedclass = true;
-                                    if (isUploadedclass && isUploadedSituations && isUploadedImage){
-                                        pref.edit().clear();
-                                        message.what = UPLOAD_OK;
-                                        handler.sendMessage(message);
-                                    }
-                                }
-                            } else {
-                                message.what = UPLOAD_FAILED;
-                                handler.sendMessage(message);
-                            }
-                        }
-                    });
-                    /*上传图片*/
+                    classData.put("checker", AVUser.getCurrentUser().getUsername());
+                    classDataList.add(classData);
+                    /*录入图片*/
                     classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
                     if (classImage.exists()){
                         try {
-                            File compressedImage = new Compressor(RecordImageDataActivity.this).setQuality(30).compressToFile(classImage);
-                            AVFile avFile = AVFile.withFile("Grade"+classArrayGrade[number]+"Class"+classArrayRoom[number],
-                                    compressedImage);
-                            avFile.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(AVException e) {
-                                    if (e == null){
-                                        if (number == max){
-                                            isUploadedImage = true;
-                                            if (isUploadedclass && isUploadedSituations && isUploadedImage){
-                                                pref.edit().clear();
-                                                message.what = UPLOAD_OK;
-                                                handler.sendMessage(message);
-                                            }
-                                        }
-                                    } else {
-                                        message.what = UPLOAD_FAILED;
-                                        handler.sendMessage(message);
-                                    }
-                                }
-                            });
+                            File compressedImage = new Compressor(RecordImageDataActivity.this)
+                                    .setMaxHeight(150).setQuality(23).compressToFile(classImage);
+                            String fileName = "";
+                            switch (classArrayGrade[number]){
+                                case SENIOR_1:fileName = "高一（"+classArrayRoom[number]+"）班";break;
+                                case SENIOR_2:fileName = "高二（"+classArrayRoom[number]+"）班";break;
+                                case SENIOR_3:fileName = "高三（"+classArrayRoom[number]+"）班";break;
+                                case JUNIOR_1:fileName = "初一（"+classArrayRoom[number]+"）班";break;
+                                case JUNIOR_2:fileName = "初二（"+classArrayRoom[number]+"）班";break;
+                                case JUNIOR_3:fileName = "初三（"+classArrayRoom[number]+"）班";break;
+                            }
+                            AVFile avFile = AVFile.withFile(fileName,compressedImage);
+                            classImageList.add(avFile);
                         } catch (IOException e){
                             e.printStackTrace();
                         }
                     }
-                    /*上传扣分情况*/
+                    /*录入扣分情况*/
                     for (int i = 1;i <= pref.getInt("listNum"+number,0);i++){
+                        AVObject situationData = new AVObject("SituationData");
                         situationData.put("grade",classArrayGrade[number]);
                         situationData.put("classroom",classArrayRoom[number]);
                         situationData.put("location",pref.getString("location"+number+""+i,""));
                         situationData.put("event",pref.getString("event"+number+""+i,""));
                         situationData.put("score",pref.getInt("score"+number+""+i,0));
-                        situationData.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (e == null){
-                                    isUploadedSituations = true;
-                                    if (isUploadedclass && isUploadedSituations && isUploadedImage){
-                                        pref.edit().clear();
-                                        message.what = UPLOAD_OK;
-                                        handler.sendMessage(message);
-                                    }
-                                } else {
-                                    message.what = UPLOAD_FAILED;
-                                    handler.sendMessage(message);
-                                }
-                            }
-                        });
+                        situationData.put("date",pref.getString("date"+number+""+i,""));
+                        situationData.put("checker",AVUser.getCurrentUser().getUsername());
+                        situationDataList.add(situationData);
                     }
                 }
-                message.what = UPLOAD_OK;
-                handler.sendMessage(message);
+                /*上传数据*/
+                try {
+                    AVObject.saveAll(classDataList);
+                    AVObject.saveAll(situationDataList);
+                    for (AVFile avFile:classImageList) avFile.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            updateDataHandler.removeCallbacks(updateProgressThread);
+                            if (e != null) RecordImageDataActivity.this.e = e;
+                        }
+                    }, new ProgressCallback() {
+                        @Override
+                        public void done(final Integer integer) {
+                            updateProgressThread = new Runnable() {
+                                @Override
+                                public void run() {
+                                    Message message = updateDataHandler.obtainMessage();
+                                    message.arg1 = integer;
+                                    updateDataHandler.sendMessage(message);
+                                }
+                            };
+                            updateDataHandler.post(updateProgressThread);
+                            Log.d("progress",integer+"");
+                        }
+                    });
+                } catch (AVException e){
+                    e.printStackTrace();
+                    RecordImageDataActivity.this.e = e;
+                }
+                if (RecordImageDataActivity.this.e == null){
+                    /*清除扣分数据*/
+                    pref.edit().clear().apply();
+                    /*清除内存中图片*/
+                    for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+                        for (classroom = 1;classroom <= 18;classroom++){
+                            classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                            if (classImage.exists()) classImage.delete();
+                        }
+                    }
+                    /*清除非正常关闭标志*/
+                    SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                    editor.putBoolean("isError",false).apply();
+                    /*发送检查完成消息*/
+                    message.what = UPLOAD_OK;
+                    handler.sendMessage(message);
+                } else {
+                    message.what = UPLOAD_FAILED;
+                    handler.sendMessage(message);
+                }
             }
         }).start();
         return true;

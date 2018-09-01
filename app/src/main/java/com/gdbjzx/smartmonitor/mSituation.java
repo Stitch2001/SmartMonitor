@@ -1,5 +1,7 @@
 package com.gdbjzx.smartmonitor;
 
+import java.util.Date;
+
 /**
  * Created by Administrator on 2018/8/17.
  */
@@ -12,10 +14,13 @@ public class mSituation {
 
     private int score;
 
-    public mSituation(String location,String event,int score){
+    private String date;
+
+    public mSituation(String location,String event,int score,String date){
         this.location = location;
         this.event = event;
         this.score = score;
+        this.date = date;
     }
 
     public String getLocation() {
@@ -42,4 +47,11 @@ public class mSituation {
         this.score = score;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

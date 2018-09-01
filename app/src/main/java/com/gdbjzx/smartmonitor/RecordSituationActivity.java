@@ -21,7 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RecordSituationActivity extends AppCompatActivity {
@@ -74,7 +76,8 @@ public class RecordSituationActivity extends AppCompatActivity {
             String location = pref.getString("location"+number+""+i,"");
             String event = pref.getString("event"+number+""+i,"");
             int score = pref.getInt("score"+number+""+i,0);
-            situationList.add(new mSituation(location,event,score));
+            String date = pref.getString("date"+number+""+i,"");
+            situationList.add(new mSituation(location,event,score,date));
         }
 
         /*导入RecyclerView*/
@@ -84,57 +87,53 @@ public class RecordSituationActivity extends AppCompatActivity {
         final SituationAdapter adapter = new SituationAdapter(situationList,RecordSituationActivity.this);
         recyclerView.setAdapter(adapter);
 
-        /*设置点击事件*/
-        String[] situations = new String[]
-                { "使用手机", "玩手机","玩游戏", "戴耳机", "全班吵闹","未写应到实到" };
-        ArrayAdapter<String> situationsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, situations);
+        /*设置“+”按钮的点击事件*/
         final EditText locationYText = (EditText) findViewById(R.id.location_y);
         final EditText locationXText = (EditText) findViewById(R.id.location_x);
         final AutoCompleteTextView eventText = (AutoCompleteTextView) findViewById(R.id.event);
-        eventText.setAdapter(situationsAdapter);
         final EditText scoreText = (EditText) findViewById(R.id.score);
         final EditText locationText = (EditText) findViewById(R.id.location);
         final EditText personNumberText = (EditText) findViewById(R.id.person_number);
         final AutoCompleteTextView event2Text = (AutoCompleteTextView) findViewById(R.id.event2);
-        event2Text.setAdapter(situationsAdapter);
         final EditText score2Text = (EditText) findViewById(R.id.score2);
-
-        /*设置“+”按钮的点击事件*/
+        String[] situations = new String[]{ "使用手机", "玩手机","玩游戏", "戴耳机", "全班吵闹","未写应到实到" };
+        ArrayAdapter<String> situationsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, situations);
+        event2Text.setAdapter(situationsAdapter);
+        eventText.setAdapter(situationsAdapter);
         FloatingActionButton submitButton = (FloatingActionButton) findViewById(R.id.submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*将输入的数据录入到列表中*/
                 String locationYString,locationXString,scoreString,score2String;
+                int locationY,locationX,score,score2;
+
                 locationYString = locationYText.getText().toString();
                 locationXString = locationXText.getText().toString();
                 scoreString = scoreText.getText().toString();
+                if (!locationYString.isEmpty())locationY = Integer.parseInt(locationYString);
+                    else locationY = 0;
+                if (!locationXString.isEmpty())locationX = Integer.parseInt(locationXString);
+                    else locationX = 0;
+                if (!scoreString.isEmpty()) score = Integer.parseInt(scoreString);
+                    else score = 0;
+
                 score2String = score2Text.getText().toString();
-                int locationY,locationX,score,score2;
-                if (!locationYString.isEmpty()){
-                    locationY = Integer.parseInt(locationYString);
-                } else locationY = 0;
-                if (!locationXString.isEmpty()){
-                    locationX = Integer.parseInt(locationXString);
-                } else locationX = 0;
                 String event = eventText.getText().toString();
-                if (!scoreString.isEmpty()) {
-                    score = Integer.parseInt(scoreString);
-                } else score = 0;
                 String personNumber = personNumberText.getText().toString();
                 String location;
-                if (personNumber.isEmpty()){
-                    location = locationText.getText().toString();//此处的位置没有包含人数
-                } else {
-                    location = locationText.getText().toString()+personNumber+"人";//此处的位置包含了人数
-                }//判断是否填写人数，没有填写人数则不加上去
+                /*判断是否填写人数，没有填写人数则不加上去*/
+                if (personNumber.isEmpty())location = locationText.getText().toString();//此处的位置没有包含人数
+                    else location = locationText.getText().toString()+personNumber+"人";//此处的位置包含了人数
                 String event2 = event2Text.getText().toString();
-                if (!score2String.isEmpty()) {
-                    score2 = Integer.parseInt(score2String);
-                } else score2 = 0;
+                if (!score2String.isEmpty()) score2 = Integer.parseInt(score2String);
+                    else score2 = 0;
                 if ((locationY > 0) && (locationX > 0) && (event != "") && (score>0)){
                     listNum++;
-                    situationList.add(new mSituation("第"+locationY+"列第"+locationX+"排",event,score));
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
+                    Date date = new Date(System.currentTimeMillis());//获取当前时间
+                    String formatedDate = simpleDateFormat.format(date).toString();
+                    situationList.add(new mSituation("第"+locationY+"列第"+locationX+"排",event,score,formatedDate));
                     adapter.notifyDataSetChanged();
                     locationYText.setText("");
                     locationXText.setText("");
@@ -143,7 +142,10 @@ public class RecordSituationActivity extends AppCompatActivity {
                 }
                 if ((location != "") && (event2 != "") && (score2>0)){
                     listNum++;
-                    situationList.add(new mSituation(location,event2,score2));
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
+                    Date date = new Date(System.currentTimeMillis());//获取当前时间
+                    String formatedDate = simpleDateFormat.format(date).toString();
+                    situationList.add(new mSituation(location,event2,score2,formatedDate));
                     adapter.notifyDataSetChanged();
                     locationText.setText("");
                     personNumberText.setText("");
@@ -163,7 +165,8 @@ public class RecordSituationActivity extends AppCompatActivity {
             for (int i = 1;i <= listNum;i++){
             editor.putString("location"+number+""+i,situationList.get(i-1).getLocation())
                     .putString("event"+number+""+i,situationList.get(i-1).getEvent())
-                    .putInt("score"+number+""+i,situationList.get(i-1).getScore());
+                    .putInt("score"+number+""+i,situationList.get(i-1).getScore())
+                    .putString("date"+number+""+i,situationList.get(i-1).getDate());
         }
         editor.putInt("listNum"+number,listNum).apply();
     }
