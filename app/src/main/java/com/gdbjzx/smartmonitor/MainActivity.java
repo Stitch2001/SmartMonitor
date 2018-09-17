@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RECORD_SITUATION = 3;
     private static final int NOTIFY_CHECKING_SITUATION = 4;
     private static final int RECORD_IMAGE_DATA = 5;
+    private static final int SET_REGULATION = 6;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -170,15 +171,6 @@ public class MainActivity extends AppCompatActivity {
         ////////////////////////////////////////////////////////////////////////////////////////////
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        /*把当前用户名显示在NavigationView上*/
-        mDrawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                TextView userNameText = findViewById(R.id.username_text);
-                userNameText.setText("欢迎你，"+AVUser.getCurrentUser().getUsername());
-            }
-        });
-
         /*设置Toolbar为默认ActionBar，设置图标*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -208,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_set_regulation:
                         intent = new Intent(MyApplication.getContext(),SetRegulationActivity.class);
-                        startActivity(intent);
+                        startActivityForResult(intent,SET_REGULATION);
                         break;
                     default:
                 }
@@ -373,6 +365,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         navigationView.setCheckedItem(R.id.nav_monitor);//设置“检查”高亮
+
+        /*把当前用户名显示在NavigationView上*/
+        mDrawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                TextView userNameText = findViewById(R.id.username_text);
+                if (AVUser.getCurrentUser() != null) userNameText.setText("欢迎你，"+AVUser.getCurrentUser().getUsername());
+            }
+        });
     }
 
     @Override
@@ -471,6 +472,37 @@ public class MainActivity extends AppCompatActivity {
                     showImage(ShowMode.SHOW_BLANK);
                     takePhotoButtonMode = CAMERA;
                     takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
+                    nextClassButton.setImageResource(android.R.drawable.ic_media_ff);
+                }
+                break;
+            case SET_REGULATION:
+                if (resultCode == RESULT_OK){
+                    /*读取班级顺序并储存*/
+                    SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
+                    for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+                        for (classroom = 1;classroom <= 18;classroom++){
+                            number = pref.getInt(grade+""+classroom+"",0);
+                            if (number != 0){
+                                classArrayGrade[number] = grade;
+                                classArrayRoom[number] = classroom;
+                                if (max<number) max = number;
+                            }
+                        }
+                    }
+                    /*读取第一个班级并显示*/
+                    number = 1;
+                    currentGrade = classArrayGrade[number];
+                    currentRoom = classArrayRoom[number];
+                    switch (currentGrade){
+                        case SENIOR_1:classNameView.setText("高一（"+currentRoom+"）班");break;
+                        case SENIOR_2:classNameView.setText("高二（"+currentRoom+"）班");break;
+                        case SENIOR_3:classNameView.setText("高三（"+currentRoom+"）班");break;
+                        case JUNIOR_1:classNameView.setText("初一（"+currentRoom+"）班");break;
+                        case JUNIOR_2:classNameView.setText("初二（"+currentRoom+"）班");break;
+                        case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
+                    }
+                    /*初始化按钮*/
+                    nextClassButton.setImageResource(android.R.drawable.ic_media_ff);
                 }
                 break;
             default:

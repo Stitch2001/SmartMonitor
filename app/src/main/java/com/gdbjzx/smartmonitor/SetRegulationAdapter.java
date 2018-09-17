@@ -1,12 +1,7 @@
 package com.gdbjzx.smartmonitor;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v7.widget.LinearLayoutManager;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,20 +11,17 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.List;
 
-import q.rorbin.badgeview.Badge;
-import q.rorbin.badgeview.QBadgeView;
-
-import static android.content.Context.MODE_PRIVATE;
-
 /**
- * Created by Administrator on 2018/8/19.
+ * Created by Administrator on 2018/8/3.
  */
 
-public class CheckingClassAdapter extends RecyclerView.Adapter<CheckingClassAdapter.ViewHolder> {
+public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdapter.ViewHolder> {
 
     private List<mClass> mClassList;
 
     private mClass aClass;
+
+    private SetRegulationActivity context;
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -38,7 +30,23 @@ public class CheckingClassAdapter extends RecyclerView.Adapter<CheckingClassAdap
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
 
-    private NotifyCheckingSituationActivity context;
+    private static final int[] LIGHT_IMAGE_ID = {R.drawable.class_light_1,R.drawable.class_light_2,R.drawable.class_light_3,
+            R.drawable.class_light_4,R.drawable.class_light_5,R.drawable.class_light_6,R.drawable.class_light_7,
+            R.drawable.class_light_8,R.drawable.class_light_9,R.drawable.class_light_10,R.drawable.class_light_11,
+            R.drawable.class_light_12,R.drawable.class_light_13,R.drawable.class_light_14,R.drawable.class_light_15,
+            R.drawable.class_light_16,R.drawable.class_light_17,R.drawable.class_light_18};
+
+    private static final int[] IMAGE_ID = {R.drawable.class_1,R.drawable.class_2,R.drawable.class_3,
+            R.drawable.class_4,R.drawable.class_5,R.drawable.class_6,R.drawable.class_7,
+            R.drawable.class_8,R.drawable.class_9,R.drawable.class_10,R.drawable.class_11,
+            R.drawable.class_12,R.drawable.class_13,R.drawable.class_14,R.drawable.class_15,
+            R.drawable.class_16,R.drawable.class_17,R.drawable.class_18};
+
+    private int grade,classroom,max,currentNum,count = 0;
+
+    private int[] record = {0,0,0,0,0,0,0,0,0,0,0};
+
+    private boolean isReadMax = false;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -69,7 +77,7 @@ public class CheckingClassAdapter extends RecyclerView.Adapter<CheckingClassAdap
         }
     }
 
-    public CheckingClassAdapter(List<mClass> classList, NotifyCheckingSituationActivity context){
+    public SetRegulationAdapter(List<mClass> classList, SetRegulationActivity context){
         mClassList = classList;
         this.context = context;
     }
@@ -78,30 +86,41 @@ public class CheckingClassAdapter extends RecyclerView.Adapter<CheckingClassAdap
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         /*加载布局*/
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.class_item,parent,false);
-        final ViewHolder holder = new ViewHolder(view);
-        /*设置点击事件*/
-        for (int i = 1;i <= 18;i++) setOnclickMethod(holder,i);
+        ViewHolder holder = new ViewHolder(view);
+        if (!isReadMax){
+            max = mClassList.get(mClassList.size()-1).getMax();
+            isReadMax = true;
+        }//读取最大值
+        for (int i = 0;i<=10;i++) record[i] = 0;
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         aClass = mClassList.get(position);
-        boolean isEmpty = false;//该年级中是否有检查任务标记，无则为false
-        for (int classroom = 1;classroom <= 18;classroom++){
-            if (aClass.getClassArray(classroom) == 0){
-                holder.classroomView[classroom].setVisibility(View.GONE);//如果不用检查该班级，则不显示
-            } else {
-                File classImage = new File(MyApplication.getContext().getExternalCacheDir(),position+""+classroom+".jpg");
-                if (!classImage.exists()){
-                    holder.classroomView[classroom].setImageResource(aClass.getImageId(classroom));//如果该班级还未检查，则该项显示为灰色
-                    context.leftClass++;//剩余未检查班级数+1
-                }
-                isEmpty = true;
-            }
-            if (isEmpty) holder.gradeText.setText(aClass.getGrade());
-                else holder.gradeText.setVisibility(View.GONE);//如果该年级没有检查任务，则不显示
+        switch (aClass.getGrade()){
+            case SENIOR_1:holder.gradeText.setText("高一");break;
+            case SENIOR_2:holder.gradeText.setText("高二");break;
+            case SENIOR_3:holder.gradeText.setText("高三");break;
+            case JUNIOR_1:holder.gradeText.setText("初一");break;
+            case JUNIOR_2:holder.gradeText.setText("初二");break;
+            case JUNIOR_3:holder.gradeText.setText("初三");break;
         }
+        int i = 1;
+        for (classroom = 1;classroom <= 18;classroom++){
+            if (aClass.getClassroomBool(classroom)){
+                holder.classroomView[i].setVisibility(View.VISIBLE);//显示该班级
+                holder.classroomView[i].setImageResource(aClass.getImageId(classroom));
+                aClass.setBadge(i,holder.classroomView[i],aClass.getArray(classroom));
+                i++;
+            }
+        }
+        record[position+1] = i-1;
+        /*隐藏该年级中的其他控件，以腾出空间*/
+        if (i <= 6) i = 7;
+        else if (i <= 12) i = 13;
+        else if (i <= 18) i = 19;//只GONE掉整一行都是INVISIBLE的控件，以保持界面结构
+        for (int j = 18;j >= i;j--) holder.classroomView[j].setVisibility(View.GONE);
     }
 
     @Override
@@ -109,17 +128,4 @@ public class CheckingClassAdapter extends RecyclerView.Adapter<CheckingClassAdap
         return mClassList.size();
     }
 
-    private void setOnclickMethod(final ViewHolder holder,final int classroom){
-        holder.classroomView[classroom].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int grade = holder.getAdapterPosition();
-                Intent intent = context.getIntent();
-                intent.putExtra("currentGrade",grade);
-                intent.putExtra("currentRoom",classroom);
-                context.setResult(Activity.RESULT_CANCELED,intent);
-                context.finish();
-            }
-        });
-    }
 }

@@ -1,19 +1,12 @@
 package com.gdbjzx.smartmonitor;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,8 +14,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
@@ -41,10 +32,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import id.zelory.compressor.Compressor;
 
@@ -59,7 +47,6 @@ public class RecordImageDataActivity extends AppCompatActivity {
 
     private static final int UPLOAD_FAILED = 0;
     private static final int UPLOAD_OK = 1;
-    private static final int UPDATE_PROGRESS = 2;
 
     private ImageView photoImage;
     private TextView classNameView;
@@ -71,10 +58,9 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private TextInputEditText temporary;
     private ProgressBar progressBar;
 
-    private int grade = 1,classroom = 1,currentGrade = 1,currentRoom = 1,number = 1,max = 1;
+    private int grade = 1,classroom = 1,currentGrade = 1,currentRoom = 1,number = 1,max = 1,oughtNum,factNum,leaveNum,temporaryNum;
     private int[] classArrayGrade = new int[55];
     private int[] classArrayRoom = new int[55];
-    private boolean isUploadedclass = false,isUploadedSituations = false,isUploadedImage = false;
     private AVException e = null;
     private File classImage;
 
@@ -270,29 +256,48 @@ public class RecordImageDataActivity extends AppCompatActivity {
         });
     }
 
-    private boolean saveData(SharedPreferences pref){
+    private boolean result = false;
+    private boolean saveData(final SharedPreferences pref){
         String oughtString = ought.getText().toString();
         String factString = fact.getText().toString();
         String leaveString = leave.getText().toString();
         String temporaryString = temporary.getText().toString();
 
-        int oughtNum = 0 ,factNum = 0,leaveNum = 0,temporaryNum = 0;
+        oughtNum = 0;factNum = 0;leaveNum = 0;temporaryNum = 0;
         if (!oughtString.isEmpty()) oughtNum = Integer.parseInt(oughtString);
         if (!factString.isEmpty()) factNum = Integer.parseInt(factString);
         if (!leaveString.isEmpty()) leaveNum = Integer.parseInt(leaveString);
         if (!temporaryString.isEmpty()) temporaryNum = Integer.parseInt(temporaryString);
-
+        final int absent = oughtNum + temporaryNum - factNum - leaveNum;
         if (oughtString.isEmpty() || factString.isEmpty() || leaveString.isEmpty() || temporaryString.isEmpty()){
             return false;
         } else {
-            /*保存应到实到信息*/
-            SharedPreferences.Editor editor = pref.edit();
-            editor.putInt("ought"+number,oughtNum)
-                    .putInt("fact"+number,factNum)
-                    .putInt("leave"+number,leaveNum)
-                    .putInt("temporary"+number,temporaryNum)
-                    .apply();
-            return true;
+            if (absent > 0){
+                Toast.makeText(RecordImageDataActivity.this,"经计算，有"+absent+"人缺勤，将给此班级扣"+absent+"分，需要修改请返回"
+                        ,Toast.LENGTH_LONG).show();
+                /*保存应到实到信息*/
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("ought"+number,oughtNum)
+                        .putInt("fact"+number,factNum)
+                        .putInt("leave"+number,leaveNum)
+                        .putInt("temporary"+number,temporaryNum)
+                        .putInt("absent"+number,absent)
+                        .apply();
+                return true;
+            } else if (absent < 0){
+                Toast.makeText(RecordImageDataActivity.this,"输入有误，请检查",Toast.LENGTH_SHORT).show();
+                return false;
+            } else {
+                /*保存应到实到信息*/
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("ought"+number,oughtNum)
+                        .putInt("fact"+number,factNum)
+                        .putInt("leave"+number,leaveNum)
+                        .putInt("temporary"+number,temporaryNum)
+                        .putInt("absent"+number,absent)
+                        .apply();
+                return true;
+            }
         }
     }
 
@@ -322,6 +327,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                     classData.put("fact",pref.getInt("fact"+number,0));
                     classData.put("leave",pref.getInt("leave"+number,0));
                     classData.put("temporary",pref.getInt("temporary"+number,0));
+                    classData.put("absent",pref.getInt("absent"+number,0));
                     classData.put("checker", AVUser.getCurrentUser().getUsername());
                     classDataList.add(classData);
                     /*录入图片*/

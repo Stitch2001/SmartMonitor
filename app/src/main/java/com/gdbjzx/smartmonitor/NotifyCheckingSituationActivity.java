@@ -1,23 +1,16 @@
 package com.gdbjzx.smartmonitor;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -34,9 +27,10 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
 
-    private int[][] classArray = new int[6][19];
-
     public int leftClass = 0;//还未检查的班级数
+    private List<mGradeAndClass> regulationList = new ArrayList<>();
+    private int max;
+    private int[] classArray = new int[19];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,20 +48,27 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
 
-        /*读取检查顺序，显示在界面上*/
+        /*读取该年级中的检查顺序并重新排列*/
+        for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(-1,0, 0));
+        max = 0;
         SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
         for (int grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (int classroom = 1;classroom <= 18;classroom++){
-                if (pref.getInt(grade+""+classroom+"",0) != 0){
-                    classArray[grade][classroom] = pref.getInt(grade+""+classroom+"",0);
+                int array = pref.getInt(grade+""+classroom+"",0);
+                if (array != 0){
+                    regulationList.get(array).setGrade(grade);
+                    regulationList.get(array).setClassroom(classroom);
+                    regulationList.get(array).setArray(array);
+                    if (max < array) max = array;
                 }
             }
         }
+
         initClassItem();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);//设置线性布局
         recyclerView.setLayoutManager(layoutManager);//指定布局
-        CheckingClassAdapter adapter = new CheckingClassAdapter(classList,this);//设置适配器
+        NotifyCheckingSituationAdapter adapter = new NotifyCheckingSituationAdapter(classList,this);//设置适配器
         recyclerView.setAdapter(adapter);//加载适配器
 
         /*提示还有多少个班级未检查完*/
@@ -124,12 +125,28 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initClassItem(){
-        classList.add(new mClass("高一",classArray[SENIOR_1],0));
-        classList.add(new mClass("高二",classArray[SENIOR_2],0));
-        classList.add(new mClass("高三",classArray[SENIOR_3],0));
-        classList.add(new mClass("初一",classArray[JUNIOR_1],0));
-        classList.add(new mClass("初二",classArray[JUNIOR_2],0));
-        classList.add(new mClass("初三",classArray[JUNIOR_3],0));
+        int lastGrade = SENIOR_1;
+        int currentGrade = SENIOR_1;
+        boolean[] classroomBool = {false,false,false,false,false,false,false,false,false,false,
+                false,false,false,false,false,false,false,false,false};
+
+        for (int i = 1;i <= max;i++){
+            currentGrade = regulationList.get(i).getGrade();
+            if (currentGrade == lastGrade){
+                classroomBool[regulationList.get(i).getClassroom()] = true;
+                classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
+            } else {
+                classList.add(new mClass(lastGrade,classroomBool,i,classArray));
+                lastGrade = currentGrade;
+                classroomBool = new boolean[19];
+                for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
+                classArray = new int[19];
+                for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                classroomBool[regulationList.get(i).getClassroom()] = true;
+                classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
+            }
+        }
+        classList.add(new mClass(lastGrade,classroomBool,max,classArray));
     }
 
 }

@@ -13,20 +13,25 @@ import q.rorbin.badgeview.QBadgeView;
 
 public class mClass extends Activity{
 
-    private String grade;
+    private int grade;
+
+    private boolean[] classroomBool = new boolean[19];
 
     private int[] imageId = new int[19];
+
+    private int[] lightImageId = new int[19];
+
+    private int[] array = new int[19];
 
     private int max;
 
     private Badge[] badge = new Badge[19];
 
-    private int[] classArray = new int[19];
-
-    public mClass(String grade,int[] classArray,int max) {
+    public mClass(int grade,boolean[] classroomBool,int max,int[] array) {
         this.grade = grade;
-        this.classArray = classArray;
+        this.classroomBool = classroomBool;
         this.max = max;
+        this.array = array;
         imageId[1] = R.drawable.class_1;
         imageId[2] = R.drawable.class_2;
         imageId[3] = R.drawable.class_3;
@@ -45,13 +50,31 @@ public class mClass extends Activity{
         imageId[16] = R.drawable.class_16;
         imageId[17] = R.drawable.class_17;
         imageId[18] = R.drawable.class_18;
+        lightImageId[1] = R.drawable.class_light_1;
+        lightImageId[2] = R.drawable.class_light_2;
+        lightImageId[3] = R.drawable.class_light_3;
+        lightImageId[4] = R.drawable.class_light_4;
+        lightImageId[5] = R.drawable.class_light_5;
+        lightImageId[6] = R.drawable.class_light_6;
+        lightImageId[7] = R.drawable.class_light_7;
+        lightImageId[8] = R.drawable.class_light_8;
+        lightImageId[9] = R.drawable.class_light_9;
+        lightImageId[10] = R.drawable.class_light_10;
+        lightImageId[11] = R.drawable.class_light_11;
+        lightImageId[12] = R.drawable.class_light_12;
+        lightImageId[13] = R.drawable.class_light_13;
+        lightImageId[14] = R.drawable.class_light_14;
+        lightImageId[15] = R.drawable.class_light_15;
+        lightImageId[16] = R.drawable.class_light_16;
+        lightImageId[17] = R.drawable.class_light_17;
+        lightImageId[18] = R.drawable.class_light_18;
     }
 
-    public String getGrade() {
+    public int getGrade() {
             return grade;
         }
 
-    public void setGrade(String grade) {
+    public void setGrade(int grade) {
             this.grade = grade;
         }
 
@@ -61,6 +84,14 @@ public class mClass extends Activity{
 
     public void setImageId(int position,int imageId) {
         this.imageId[position] = imageId;
+    }
+
+    public int getLightImageId(int position) {
+        return lightImageId[position];
+    }
+
+    public void setLightImageId(int position,int lightImageId) {
+        this.lightImageId[position] = lightImageId;
     }
 
     public Badge getBadge(int position) {
@@ -86,15 +117,27 @@ public class mClass extends Activity{
         this.badge[position] = null;
     }
 
-    public int getClassArray(int classroom) {
-        return classArray[classroom];
-    }
-
-    public void setClassArray(int classroom,int classArrayNum) {
-        this.classArray[classroom] = classArrayNum;
-    }
-
     public int getMax() {
         return max;
+    }
+
+    public void setMax(int max){
+        this.max = max;
+    }
+
+    public boolean getClassroomBool(int position) {
+        return classroomBool[position];
+    }
+
+    public void setClassroomBool(int position,boolean classroom) {
+        this.classroomBool[position] = classroom;
+    }
+
+    public int getArray(int position) {
+        return array[position];
+    }
+
+    public void setArray(int position,int array) {
+        this.array[position] = array;
     }
 }

@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_1" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_2"
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_2" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_3"
@@ -45,8 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_3" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_4"
@@ -54,8 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_4" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_5"
@@ -63,8 +63,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_5" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_6"
@@ -72,8 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_6" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -90,8 +90,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_7" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_8"
@@ -99,8 +99,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_8" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_9"
@@ -108,8 +108,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_9" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_10"
@@ -117,8 +117,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_10" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_11"
@@ -126,8 +126,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_11" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_12"
@@ -135,8 +135,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_12" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -153,8 +153,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_13" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_14"
@@ -162,8 +162,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_14" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_15"
@@ -171,8 +171,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_15" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_16"
@@ -180,8 +180,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_16" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_17"
@@ -189,8 +189,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_17" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/class_18"
@@ -198,8 +198,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
             android:layout_weight="1"
-            android:clickable="true"
-            app:srcCompat="@drawable/class_light_18" />
+            android:clickable="false"
+            android:visibility="invisible" />
 
     </LinearLayout>
 </LinearLayout>
