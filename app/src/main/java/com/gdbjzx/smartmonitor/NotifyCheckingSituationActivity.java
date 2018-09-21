@@ -20,6 +20,7 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
 
     private List<mClass> classList = new ArrayList<>();
 
+    private static final int NON_GRADE = -1;
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
     private static final int SENIOR_3 = 2;
@@ -125,10 +126,10 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initClassItem(){
-        int lastGrade = SENIOR_1;
-        int currentGrade = SENIOR_1;
         boolean[] classroomBool = {false,false,false,false,false,false,false,false,false,false,
                 false,false,false,false,false,false,false,false,false};
+        int lastGrade = NON_GRADE;
+        int currentGrade = NON_GRADE;
 
         for (int i = 1;i <= max;i++){
             currentGrade = regulationList.get(i).getGrade();
@@ -136,7 +137,9 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
                 classroomBool[regulationList.get(i).getClassroom()] = true;
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             } else {
-                classList.add(new mClass(lastGrade,classroomBool,i,classArray));
+                if (lastGrade != NON_GRADE){
+                    classList.add(new mClass(lastGrade,classroomBool,i,classArray));
+                }
                 lastGrade = currentGrade;
                 classroomBool = new boolean[19];
                 for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
@@ -146,7 +149,7 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             }
         }
-        classList.add(new mClass(lastGrade,classroomBool,max,classArray));
+        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,max,classArray));
     }
 
 }

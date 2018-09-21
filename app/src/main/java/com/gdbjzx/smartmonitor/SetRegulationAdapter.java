@@ -44,8 +44,6 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
 
     private int grade,classroom,max,currentNum,count = 0;
 
-    private int[] record = {0,0,0,0,0,0,0,0,0,0,0};
-
     private boolean isReadMax = false;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -91,7 +89,6 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
             max = mClassList.get(mClassList.size()-1).getMax();
             isReadMax = true;
         }//读取最大值
-        for (int i = 0;i<=10;i++) record[i] = 0;
         return holder;
     }
 
@@ -111,11 +108,13 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
             if (aClass.getClassroomBool(classroom)){
                 holder.classroomView[i].setVisibility(View.VISIBLE);//显示该班级
                 holder.classroomView[i].setImageResource(aClass.getImageId(classroom));
-                aClass.setBadge(i,holder.classroomView[i],aClass.getArray(classroom));
+                if (aClass.getBadge(i) == null) aClass.setBadge(i,holder.classroomView[i],aClass.getArray(classroom));
+                i++;
+            } else {
+                holder.classroomView[i].setVisibility(View.INVISIBLE);
                 i++;
             }
         }
-        record[position+1] = i-1;
         /*隐藏该年级中的其他控件，以腾出空间*/
         if (i <= 6) i = 7;
         else if (i <= 12) i = 13;

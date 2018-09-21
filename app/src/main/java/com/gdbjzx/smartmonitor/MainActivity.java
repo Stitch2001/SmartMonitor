@@ -478,6 +478,10 @@ public class MainActivity extends AppCompatActivity {
             case SET_REGULATION:
                 if (resultCode == RESULT_OK){
                     /*读取班级顺序并储存*/
+                    classArrayGrade = new int[55];
+                    for (int j = 1;j <= 54;j++) classArrayGrade[j] = 0;//初始化classArrayGrade[]
+                    classArrayRoom = new int[55];
+                    for (int j = 1;j <= 54;j++) classArrayRoom[j] = 0;//初始化classArrayRoom[]
                     SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
                     for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
                         for (classroom = 1;classroom <= 18;classroom++){

@@ -112,9 +112,11 @@ public class mClass extends Activity{
         this.badge[position].hide(true);
     }
 
-    public void deleteBadge(int position){
-        hideBadge(position);
-        this.badge[position] = null;
+    public void deleteAllBadge(){
+        for (int i = 1;i <= max;i++){
+            hideBadge(i);
+            this.badge[i] = null;
+        }
     }
 
     public int getMax() {

@@ -39,6 +39,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private SharedPreferences.Editor editor;
     private SetRegulationAdapter adapter;
 
+    private static final int NON_GRADE = -1;
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
     private static final int SENIOR_3 = 2;
@@ -46,7 +47,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
 
-    public int max;
+    public int max,gradeMax;
     public List<mGradeAndClass> regulationList = new ArrayList<>();
     private int[] classArray = new int[19];
     private Badge[][] badges = new Badge[6][19];
@@ -138,17 +139,13 @@ public class SetRegulationActivity extends AppCompatActivity  {
                     case "初三":grade = JUNIOR_3;break;
                 }
                 classroom = Integer.parseInt(classSpinner.getSelectedItem().toString());
-                if (!classroomSet.contains(gradeString+classroom)){
-                    classroomSet.add(gradeString+""+classroom);
+                if (!classroomSet.contains(grade+""+classroom)){
+                    classroomSet.add(grade+""+classroom);
                     if (grade == lastGrade){
-                        if (isFirstUsed){
-                            classList.add(new mClass(grade,classroomBool,max,classArray));
-                            isFirstUsed = false;
-                        }
+                        max++;gradeMax++;
                         classList.get(classList.size()-1).setClassroomBool(classroom,true);
-                        max++;
                         classList.get(classList.size()-1).setArray(classroom,max);
-                        classList.get(classList.size()-1).setMax(max);
+                        classList.get(classList.size()-1).setMax(gradeMax);
                         regulationList.get(max).setGrade(grade);
                         regulationList.get(max).setClassroom(classroom);
                         regulationList.get(max).setArray(max);
@@ -157,10 +154,10 @@ public class SetRegulationActivity extends AppCompatActivity  {
                         for (int j = 0;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
                         classroomBool[classroom] = true;
                         classArray = new int[19];
-                        max++;
                         for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                        max++;gradeMax = 1;
                         classArray[classroom] = max;
-                        classList.add(new mClass(grade,classroomBool,max,classArray));
+                        classList.add(new mClass(grade,classroomBool,gradeMax,classArray));
                         regulationList.get(max).setGrade(grade);
                         regulationList.get(max).setClassroom(classroom);
                         regulationList.get(max).setArray(max);
@@ -175,10 +172,16 @@ public class SetRegulationActivity extends AppCompatActivity  {
             @Override
             public void onClick(View view) {
                 classroomSet.clear();
+                for (int i = 0;i <= classList.size()-1;i++) classList.get(i).deleteAllBadge();
                 classList.clear();
                 regulationList.clear();
                 for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(-1,0, 0));
                 max = 0;
+                classroomBool = new boolean[19];
+                for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
+                classArray = new int[19];
+                for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                lastGrade = NON_GRADE;
                 adapter.notifyDataSetChanged();
                 editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
                 editor.clear().apply();
@@ -218,39 +221,42 @@ public class SetRegulationActivity extends AppCompatActivity  {
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     private void initClass(){
-        lastGrade = SENIOR_1;
-        int currentGrade = SENIOR_1;
+        gradeMax = 0;
+        lastGrade = NON_GRADE;
+        int currentGrade = NON_GRADE;
         for (int i = 1;i <= max;i++){
-            isFirstUsed = false;
             currentGrade = regulationList.get(i).getGrade();
             if (currentGrade == lastGrade){
+                gradeMax++;
                 classroomBool[regulationList.get(i).getClassroom()] = true;
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             } else {
-                classList.add(new mClass(lastGrade,classroomBool,i,classArray));
+                if (lastGrade != NON_GRADE){
+                    classList.add(new mClass(lastGrade,classroomBool,gradeMax,classArray));
+                }
                 lastGrade = currentGrade;
                 classroomBool = new boolean[19];
                 for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
                 classArray = new int[19];
                 for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                gradeMax = 1;
                 classroomBool[regulationList.get(i).getClassroom()] = true;
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             }
         }
-        if (!isFirstUsed) classList.add(new mClass(lastGrade,classroomBool,max,classArray));
+        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,max,classArray));
         lastGrade = currentGrade;
     }
 
     /*保存检查顺序*/
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
         for (int i = 1;i <= max;i++){
             grade = regulationList.get(i).getGrade();
             classroom = regulationList.get(i).getClassroom();
             editor.putInt(grade+""+classroom+"",i);
-            Log.d("saving","i="+i+" grade="+grade+" classroom="+classroom);
         }
         editor.apply();
     }
