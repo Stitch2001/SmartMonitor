@@ -2,6 +2,7 @@ package com.gdbjzx.smartmonitor;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,16 +111,24 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
                 holder.classroomView[i].setImageResource(aClass.getImageId(classroom));
                 if (aClass.getBadge(i) == null) aClass.setBadge(i,holder.classroomView[i],aClass.getArray(classroom));
                 i++;
-            } else {
-                holder.classroomView[i].setVisibility(View.INVISIBLE);
-                i++;
             }
         }
         /*隐藏该年级中的其他控件，以腾出空间*/
-        if (i <= 6) i = 7;
-        else if (i <= 12) i = 13;
-        else if (i <= 18) i = 19;//只GONE掉整一行都是INVISIBLE的控件，以保持界面结构
-        for (int j = 18;j >= i;j--) holder.classroomView[j].setVisibility(View.GONE);
+        if (i <= 6) {
+            for (int j = 6;j >= i;j--) holder.classroomView[j].setVisibility(View.INVISIBLE);
+            i = 7;
+        }
+        else if (i <= 12) {
+            for (int j = 12;j >= i;j--) holder.classroomView[j].setVisibility(View.INVISIBLE);
+            if (i != 7) i = 13;
+        }
+        else if (i <= 18) {
+            for (int j = 18;j >= i;j--) holder.classroomView[j].setVisibility(View.INVISIBLE);
+            if (i != 13 )i = 19;//只GONE掉整一行都是INVISIBLE的控件，以保持界面结构
+        }
+        for (int j = 18;j >= i;j--) {
+            holder.classroomView[j].setVisibility(View.GONE);
+        }
     }
 
     @Override

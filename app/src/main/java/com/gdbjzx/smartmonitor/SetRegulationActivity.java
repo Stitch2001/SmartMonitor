@@ -106,7 +106,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
         ////////////////////////////////////////////////////////////////////////////////////////////
 
         /*读取该年级中的检查顺序并重新排列*/
-        for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(-1,0, 0));
+        for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(NON_GRADE,0, 0));
         max = 0;
         SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
@@ -121,6 +121,8 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 }
             }
         }
+        grade = regulationList.get(max).getGrade();
+        classroom = regulationList.get(max).getClassroom();
 
         /*设置按钮点击事件*/
         FloatingActionButton submit = (FloatingActionButton) findViewById(R.id.submit);
@@ -167,6 +169,31 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 }
             }
         });
+        FloatingActionButton back = (FloatingActionButton) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                classroomSet.remove(grade+""+classroom);
+                max--;gradeMax--;
+                classList.get(classList.size()-1).setClassroomBool(classroom,false);
+                classList.get(classList.size()-1).setArray(classroom,0);
+                classList.get(classList.size()-1).setMax(gradeMax);
+                classList.get(classList.size()-1).deleteBadge(gradeMax+1);
+                regulationList.get(max+1).setGrade(NON_GRADE);
+                regulationList.get(max+1).setClassroom(0);
+                regulationList.get(max+1).setArray(0);
+                if (gradeMax == 0) {
+                    classList.remove(classList.size()-1);
+                    if (classList.size() != 0) gradeMax = classList.get(classList.size()-1).getMax();
+                    lastGrade = regulationList.get(max).getGrade();
+                }
+                adapter.notifyDataSetChanged();
+                editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                editor.putInt(grade+""+classroom,0).apply();
+                classroom = regulationList.get(max).getClassroom();
+                grade = regulationList.get(max).getGrade();
+            }
+        });
         FloatingActionButton clear = (FloatingActionButton) findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +202,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 for (int i = 0;i <= classList.size()-1;i++) classList.get(i).deleteAllBadge();
                 classList.clear();
                 regulationList.clear();
-                for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(-1,0, 0));
+                for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(NON_GRADE,0, 0));
                 max = 0;
                 classroomBool = new boolean[19];
                 for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
@@ -187,7 +214,6 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 editor.clear().apply();
             }
         });
-        FloatingActionButton back = (FloatingActionButton) findViewById(R.id.back);
 
         /*导入班级布局*/
         initClass();//初始化班级数据
@@ -244,7 +270,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             }
         }
-        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,max,classArray));
+        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,gradeMax,classArray));
         lastGrade = currentGrade;
     }
 
@@ -256,7 +282,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
         for (int i = 1;i <= max;i++){
             grade = regulationList.get(i).getGrade();
             classroom = regulationList.get(i).getClassroom();
-            editor.putInt(grade+""+classroom+"",i);
+            editor.putInt(grade+""+classroom,i);
         }
         editor.apply();
     }

@@ -108,14 +108,14 @@ public class mClass extends Activity{
         this.badge[position].setBadgeText(classArrayNum+"");
     }
 
-    public void hideBadge(int position){
+    public void deleteBadge(int position){
         this.badge[position].hide(true);
+        this.badge[position] = null;
     }
 
     public void deleteAllBadge(){
         for (int i = 1;i <= max;i++){
-            hideBadge(i);
-            this.badge[i] = null;
+            deleteBadge(i);
         }
     }
 

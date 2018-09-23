@@ -482,10 +482,11 @@ public class MainActivity extends AppCompatActivity {
                     for (int j = 1;j <= 54;j++) classArrayGrade[j] = 0;//初始化classArrayGrade[]
                     classArrayRoom = new int[55];
                     for (int j = 1;j <= 54;j++) classArrayRoom[j] = 0;//初始化classArrayRoom[]
+                    max = 0;
                     SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
                     for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
                         for (classroom = 1;classroom <= 18;classroom++){
-                            number = pref.getInt(grade+""+classroom+"",0);
+                            number = pref.getInt(grade+""+classroom,0);
                             if (number != 0){
                                 classArrayGrade[number] = grade;
                                 classArrayRoom[number] = classroom;
