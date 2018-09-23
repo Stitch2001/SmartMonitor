@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Administrator on 2018/8/17.
  */
 
-public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.ViewHolder> {
+public class RecordSituationAdapter extends RecyclerView.Adapter<RecordSituationAdapter.ViewHolder> {
 
     private List<mSituation> mSituationList;
 
@@ -31,7 +31,7 @@ public class SituationAdapter extends RecyclerView.Adapter<SituationAdapter.View
         }
     }
 
-    public SituationAdapter(List<mSituation> situationList,RecordSituationActivity context){
+    public RecordSituationAdapter(List<mSituation> situationList, RecordSituationActivity context){
         mSituationList = situationList;
         this.context = context;
     }

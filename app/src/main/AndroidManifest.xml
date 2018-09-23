@@ -16,7 +16,7 @@
 
     <!-- 基础模块 END -->
     <application
-        android:name=".MyApplication"
+        android:name=".mApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="智慧纪检"

@@ -9,7 +9,7 @@ import com.avos.avoscloud.AVOSCloud;
  * Created by Administrator on 2018/8/6.
  */
 
-public class MyApplication extends Application {
+public class mApplication extends Application {
 
     private static Context context;
 

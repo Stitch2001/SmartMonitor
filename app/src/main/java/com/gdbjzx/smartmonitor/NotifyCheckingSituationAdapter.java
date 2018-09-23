@@ -92,7 +92,7 @@ public class NotifyCheckingSituationAdapter extends RecyclerView.Adapter<NotifyC
                 holder.classroomView[i].setVisibility(View.VISIBLE);//显示该班级
                 holder.classroomView[i].setTag(classroom);
                 holder.classroomView[i].setImageResource(aClass.getImageId(classroom));
-                File classImage = new File(MyApplication.getContext().getExternalCacheDir(),position+""+classroom+".jpg");
+                File classImage = new File(mApplication.getContext().getExternalCacheDir(),position+""+classroom+".jpg");
                 if (!classImage.exists()){
                     holder.classroomView[i].setImageResource(aClass.getImageId(classroom));//如果该班级还未检查，则该项显示为灰色
                     context.leftClass++;//剩余未检查班级数+1

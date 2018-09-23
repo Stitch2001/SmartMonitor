@@ -28,6 +28,9 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
 
+    private static final int PATTERN_NOON = 0;
+    private static final int PATTERN_NIGHT = 1;
+
     public int leftClass = 0;//还未检查的班级数
     private List<mGradeAndClass> regulationList = new ArrayList<>();
     private int max;
@@ -49,10 +52,16 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
 
+        /*判断是检查午休还是晚修*/
+        SharedPreferences pref;
+        int pattern = getIntent().getIntExtra("pattern",-1);
+        if (pattern == PATTERN_NOON) pref = getSharedPreferences("RegulationNoonData",MODE_PRIVATE);
+        else if (pattern == PATTERN_NIGHT) pref = getSharedPreferences("RegulationNightData",MODE_PRIVATE);
+        else pref = getSharedPreferences("null",MODE_PRIVATE);
+
         /*读取该年级中的检查顺序并重新排列*/
         for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(-1,0, 0));
         max = 0;
-        SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
         for (int grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (int classroom = 1;classroom <= 18;classroom++){
                 int array = pref.getInt(grade+""+classroom+"",0);
@@ -138,7 +147,7 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             } else {
                 if (lastGrade != NON_GRADE){
-                    classList.add(new mClass(lastGrade,classroomBool,i,classArray));
+                    classList.add(new mClass(lastGrade,classroomBool,i,classArray,null));
                 }
                 lastGrade = currentGrade;
                 classroomBool = new boolean[19];
@@ -149,7 +158,7 @@ public class NotifyCheckingSituationActivity extends AppCompatActivity {
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
             }
         }
-        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,max,classArray));
+        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,max,classArray,null));
     }
 
 }

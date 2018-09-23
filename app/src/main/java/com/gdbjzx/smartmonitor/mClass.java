@@ -14,24 +14,20 @@ import q.rorbin.badgeview.QBadgeView;
 public class mClass extends Activity{
 
     private int grade;
-
-    private boolean[] classroomBool = new boolean[19];
-
-    private int[] imageId = new int[19];
-
-    private int[] lightImageId = new int[19];
-
-    private int[] array = new int[19];
-
     private int max;
-
+    private int[] imageId = new int[19];
+    private int[] lightImageId = new int[19];
+    private int[] array = new int[19];
+    private int[] classroom = new int[19];
+    private boolean[] classroomBool = new boolean[19];
     private Badge[] badge = new Badge[19];
 
-    public mClass(int grade,boolean[] classroomBool,int max,int[] array) {
+    public mClass(int grade,boolean[] classroomBool,int max,int[] array,int[] classroom) {
         this.grade = grade;
         this.classroomBool = classroomBool;
         this.max = max;
         this.array = array;
+        this.classroom = classroom;
         imageId[1] = R.drawable.class_1;
         imageId[2] = R.drawable.class_2;
         imageId[3] = R.drawable.class_3;
@@ -74,24 +70,12 @@ public class mClass extends Activity{
             return grade;
         }
 
-    public void setGrade(int grade) {
-            this.grade = grade;
-        }
-
     public int getImageId(int position) {
         return imageId[position];
     }
 
-    public void setImageId(int position,int imageId) {
-        this.imageId[position] = imageId;
-    }
-
     public int getLightImageId(int position) {
         return lightImageId[position];
-    }
-
-    public void setLightImageId(int position,int lightImageId) {
-        this.lightImageId[position] = lightImageId;
     }
 
     public Badge getBadge(int position) {
@@ -99,13 +83,9 @@ public class mClass extends Activity{
     }
 
     public void setBadge(int position, ImageView view, int classArrayNum) {
-        this.badge[position] = new QBadgeView(MyApplication.getContext()).bindTarget(view)
+        this.badge[position] = new QBadgeView(mApplication.getContext()).bindTarget(view)
                 .setBadgeText(classArrayNum+"").setBadgeGravity(Gravity.TOP | Gravity.END)
                 .setGravityOffset(0, 0, true);
-    }
-
-    public void setBadgeText(int position,int classArrayNum){
-        this.badge[position].setBadgeText(classArrayNum+"");
     }
 
     public void deleteBadge(int position){
@@ -141,5 +121,13 @@ public class mClass extends Activity{
 
     public void setArray(int position,int array) {
         this.array[position] = array;
+    }
+
+    public int getClassroom(int array) {
+        return classroom[array];
+    }
+
+    public void setClassroom(int array,int classroom) {
+        this.classroom[array] = classroom;
     }
 }

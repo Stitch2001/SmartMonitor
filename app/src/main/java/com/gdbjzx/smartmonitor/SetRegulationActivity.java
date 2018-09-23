@@ -13,18 +13,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import q.rorbin.badgeview.Badge;
 
 public class SetRegulationActivity extends AppCompatActivity  {
 
@@ -33,9 +29,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
     private RecyclerView recyclerView;
-    private ImageView imageView;
     private LinearLayoutManager layoutManager;
-    private View currentView;
     private SharedPreferences.Editor editor;
     private SetRegulationAdapter adapter;
 
@@ -47,18 +41,20 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
 
-    public int max,gradeMax;
+    private static final int PATTERN_NOON = 0;
+    private static final int PATTERN_NIGHT = 1;
+
+    public int max,gradeMax,pattern;
     public List<mGradeAndClass> regulationList = new ArrayList<>();
     private int[] classArray = new int[19];
-    private Badge[][] badges = new Badge[6][19];
-    private int grade,classroom,currentNum;//用作循环变量
+    private int[] classIndex = new int[19];
+    private int grade,classroom;//用作循环变量
     private List<mClass> classList = new ArrayList<>();
-    private int viewId,lightImageId,lastGrade;
-    private mClass aClass;
+    private int lastGrade;
     private Set<String> classroomSet = new HashSet<>();
-    private Boolean isFirstUsed = true;
     private boolean[] classroomBool = {false,false,false,false,false,false,false,false,false,false,
             false,false,false,false,false,false,false,false,false};
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,10 +101,21 @@ public class SetRegulationActivity extends AppCompatActivity  {
         });
         ////////////////////////////////////////////////////////////////////////////////////////////
 
+        /*判断是设置午休顺序还是晚修顺序*/
+        pattern = getIntent().getIntExtra("pattern",-1);
+        if (pattern == PATTERN_NOON) {
+            pref = getSharedPreferences("RegulationNoonData",MODE_PRIVATE);
+            toolbar.setTitle("设置午休检查顺序");
+        }
+        else if (pattern == PATTERN_NIGHT) {
+            pref = getSharedPreferences("RegulationNightData",MODE_PRIVATE);
+            toolbar.setTitle("设置晚修检查顺序");
+        }
+        else pref = getSharedPreferences("null",MODE_PRIVATE);
+
         /*读取该年级中的检查顺序并重新排列*/
         for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(NON_GRADE,0, 0));
         max = 0;
-        SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
                 int array = pref.getInt(grade+""+classroom+"",0);
@@ -148,6 +155,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
                         classList.get(classList.size()-1).setClassroomBool(classroom,true);
                         classList.get(classList.size()-1).setArray(classroom,max);
                         classList.get(classList.size()-1).setMax(gradeMax);
+                        classList.get(classList.size()-1).setClassroom(gradeMax,classroom);
                         regulationList.get(max).setGrade(grade);
                         regulationList.get(max).setClassroom(classroom);
                         regulationList.get(max).setArray(max);
@@ -157,9 +165,12 @@ public class SetRegulationActivity extends AppCompatActivity  {
                         classroomBool[classroom] = true;
                         classArray = new int[19];
                         for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                        classIndex = new int[55];
+                        for (int j = 1;j <= 18;j++) classIndex[j] = 0;//初始化classIndex[]
                         max++;gradeMax = 1;
                         classArray[classroom] = max;
-                        classList.add(new mClass(grade,classroomBool,gradeMax,classArray));
+                        classIndex[gradeMax] = classroom;
+                        classList.add(new mClass(grade,classroomBool,gradeMax,classArray,classIndex));
                         regulationList.get(max).setGrade(grade);
                         regulationList.get(max).setClassroom(classroom);
                         regulationList.get(max).setArray(max);
@@ -179,6 +190,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 classList.get(classList.size()-1).setArray(classroom,0);
                 classList.get(classList.size()-1).setMax(gradeMax);
                 classList.get(classList.size()-1).deleteBadge(gradeMax+1);
+                classList.get(classList.size()-1).setClassroom(gradeMax+1,0);
                 regulationList.get(max+1).setGrade(NON_GRADE);
                 regulationList.get(max+1).setClassroom(0);
                 regulationList.get(max+1).setArray(0);
@@ -188,7 +200,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
                     lastGrade = regulationList.get(max).getGrade();
                 }
                 adapter.notifyDataSetChanged();
-                editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                editor = pref.edit();
                 editor.putInt(grade+""+classroom,0).apply();
                 classroom = regulationList.get(max).getClassroom();
                 grade = regulationList.get(max).getGrade();
@@ -208,9 +220,11 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
                 classArray = new int[19];
                 for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                classIndex = new int[55];
+                for (int j = 1;j <= 18;j++) classIndex[j] = 0;//初始化classIndex[]
                 lastGrade = NON_GRADE;
                 adapter.notifyDataSetChanged();
-                editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                editor = pref.edit();
                 editor.clear().apply();
             }
         });
@@ -242,7 +256,8 @@ public class SetRegulationActivity extends AppCompatActivity  {
     @Override
     protected void onResume() {
         super.onResume();
-        navigationView.setCheckedItem(R.id.nav_set_regulation);//设置“设置检查顺序”高亮
+        if (pattern == PATTERN_NOON) navigationView.setCheckedItem(R.id.nav_set_noon_regulation);//设置“设置检查顺序”高亮
+        else navigationView.setCheckedItem(R.id.nav_set_night_regulation);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -256,9 +271,10 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 gradeMax++;
                 classroomBool[regulationList.get(i).getClassroom()] = true;
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
+                classIndex[gradeMax] = regulationList.get(i).getClassroom();
             } else {
                 if (lastGrade != NON_GRADE){
-                    classList.add(new mClass(lastGrade,classroomBool,gradeMax,classArray));
+                    classList.add(new mClass(lastGrade,classroomBool,gradeMax,classArray,classIndex));
                 }
                 lastGrade = currentGrade;
                 classroomBool = new boolean[19];
@@ -268,9 +284,10 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 gradeMax = 1;
                 classroomBool[regulationList.get(i).getClassroom()] = true;
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();
+                classIndex[gradeMax] = regulationList.get(i).getClassroom();
             }
         }
-        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,gradeMax,classArray));
+        if (lastGrade != NON_GRADE) classList.add(new mClass(lastGrade,classroomBool,gradeMax,classArray,classIndex));
         lastGrade = currentGrade;
     }
 
@@ -278,7 +295,7 @@ public class SetRegulationActivity extends AppCompatActivity  {
     @Override
     protected void onPause() {
         super.onPause();
-        editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+        editor = pref.edit();
         for (int i = 1;i <= max;i++){
             grade = regulationList.get(i).getGrade();
             classroom = regulationList.get(i).getClassroom();

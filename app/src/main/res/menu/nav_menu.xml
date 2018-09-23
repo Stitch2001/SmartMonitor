@@ -6,9 +6,13 @@
             android:icon="@android:drawable/ic_menu_search"
             android:title="检查" />
         <item
-            android:id="@+id/nav_set_regulation"
+            android:id="@+id/nav_set_noon_regulation"
             android:icon="@android:drawable/ic_menu_manage"
-            android:title="设置检查顺序" />
+            android:title="设置午休检查顺序" />
+        <item
+            android:id="@+id/nav_set_night_regulation"
+            android:icon="@android:drawable/ic_menu_manage"
+            android:title="设置晚修检查顺序" />
         <item
             android:id="@+id/nav_activity"
             android:icon="@android:drawable/ic_menu_myplaces"

@@ -79,7 +79,7 @@ public class RecordSituationActivity extends AppCompatActivity {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.situations);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        final SituationAdapter adapter = new SituationAdapter(situationList,RecordSituationActivity.this);
+        final RecordSituationAdapter adapter = new RecordSituationAdapter(situationList,RecordSituationActivity.this);
         recyclerView.setAdapter(adapter);
 
         /*设置“+”按钮的点击事件*/

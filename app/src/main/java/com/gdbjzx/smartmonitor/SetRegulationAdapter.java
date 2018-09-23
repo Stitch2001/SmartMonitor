@@ -1,15 +1,12 @@
 package com.gdbjzx.smartmonitor;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -19,9 +16,7 @@ import java.util.List;
 public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdapter.ViewHolder> {
 
     private List<mClass> mClassList;
-
     private mClass aClass;
-
     private SetRegulationActivity context;
 
     private static final int SENIOR_1 = 0;
@@ -31,21 +26,7 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
 
-    private static final int[] LIGHT_IMAGE_ID = {R.drawable.class_light_1,R.drawable.class_light_2,R.drawable.class_light_3,
-            R.drawable.class_light_4,R.drawable.class_light_5,R.drawable.class_light_6,R.drawable.class_light_7,
-            R.drawable.class_light_8,R.drawable.class_light_9,R.drawable.class_light_10,R.drawable.class_light_11,
-            R.drawable.class_light_12,R.drawable.class_light_13,R.drawable.class_light_14,R.drawable.class_light_15,
-            R.drawable.class_light_16,R.drawable.class_light_17,R.drawable.class_light_18};
-
-    private static final int[] IMAGE_ID = {R.drawable.class_1,R.drawable.class_2,R.drawable.class_3,
-            R.drawable.class_4,R.drawable.class_5,R.drawable.class_6,R.drawable.class_7,
-            R.drawable.class_8,R.drawable.class_9,R.drawable.class_10,R.drawable.class_11,
-            R.drawable.class_12,R.drawable.class_13,R.drawable.class_14,R.drawable.class_15,
-            R.drawable.class_16,R.drawable.class_17,R.drawable.class_18};
-
-    private int grade,classroom,max,currentNum,count = 0;
-
-    private boolean isReadMax = false;
+    private int classroom = 0;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -86,10 +67,6 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
         /*加载布局*/
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.class_item,parent,false);
         ViewHolder holder = new ViewHolder(view);
-        if (!isReadMax){
-            max = mClassList.get(mClassList.size()-1).getMax();
-            isReadMax = true;
-        }//读取最大值
         return holder;
     }
 
@@ -104,14 +81,12 @@ public class SetRegulationAdapter extends RecyclerView.Adapter<SetRegulationAdap
             case JUNIOR_2:holder.gradeText.setText("初二");break;
             case JUNIOR_3:holder.gradeText.setText("初三");break;
         }
-        int i = 1;
-        for (classroom = 1;classroom <= 18;classroom++){
-            if (aClass.getClassroomBool(classroom)){
-                holder.classroomView[i].setVisibility(View.VISIBLE);//显示该班级
-                holder.classroomView[i].setImageResource(aClass.getImageId(classroom));
-                if (aClass.getBadge(i) == null) aClass.setBadge(i,holder.classroomView[i],aClass.getArray(classroom));
-                i++;
-            }
+        int i;
+        for (i = 1;i <= aClass.getMax();i++){
+            holder.classroomView[i].setVisibility(View.VISIBLE);//显示该班级
+            holder.classroomView[i].setImageResource(aClass.getImageId(aClass.getClassroom(i)));
+            if (aClass.getBadge(i) == null) aClass.setBadge(i,holder.classroomView[i],
+                    aClass.getArray(aClass.getClassroom(i)));
         }
         /*隐藏该年级中的其他控件，以腾出空间*/
         if (i <= 6) {

@@ -19,7 +19,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +33,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int LOADING = 0;
     private static final int RENEW_VIEW = 1;
 
-    private enum ShowMode {SHOW_IMAGE,SHOW_BLANK};
+    private static final int PATTERN_NOON = 0;
+    private static final int PATTERN_NIGHT = 1;
+
+    private  enum ShowMode {SHOW_IMAGE,SHOW_BLANK};
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
@@ -68,10 +72,11 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton lastClassButton;
     private FloatingActionButton nextClassButton;
 
-    private int grade,classroom,currentGrade,currentRoom,number,max,takePhotoButtonMode = 1;
+    private int grade,classroom,currentGrade,currentRoom,number,max,takePhotoButtonMode,pattern = 1;
     private int[] classArrayGrade = new int[55];
     private int[] classArrayRoom = new int[55];
     private File classImage;
+    private SharedPreferences pref;
 
     private Handler handler = new Handler(){
 
@@ -111,8 +116,20 @@ public class MainActivity extends AppCompatActivity {
         photoImage = (ImageView) findViewById(R.id.photo_image);
         classNameView = (TextView) findViewById(R.id.class_name);
 
+        /*判断应该检查午休还是晚修*/
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH");// HH:mm:ss
+        Date date = new Date(System.currentTimeMillis());//获取当前时间
+        short formatedDate = Short.parseShort(simpleDateFormat.format(date).toString());
+        if ((formatedDate >= 0) && (formatedDate <= 15)) {
+            pattern = PATTERN_NOON;
+            pref = getSharedPreferences("RegulationNoonData",MODE_PRIVATE);
+        } else {
+            pattern = PATTERN_NIGHT;
+            pref = getSharedPreferences("RegulationNightData",MODE_PRIVATE);
+        }
+
         /*读取班级顺序并储存*/
-        final SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
+        max = 0;
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
                 number = pref.getInt(grade+""+classroom+"",0);
@@ -161,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = getSharedPreferences("RecordSituation",MODE_PRIVATE).edit();
                     editor.clear().apply();
                     /*清除非正常关闭标记*/
-                    editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                    editor = pref.edit();
                     editor.putBoolean("isError",false).apply();
                 }
             });
@@ -195,11 +212,17 @@ public class MainActivity extends AppCompatActivity {
                         editor.apply();
                         /*阻止自动登录*/
                         AVUser.logOut();
-                        intent = new Intent(MyApplication.getContext(),LoginActivity.class);
+                        intent = new Intent(mApplication.getContext(),LoginActivity.class);
                         startActivityForResult(intent,LOGIN);
                         break;
-                    case R.id.nav_set_regulation:
-                        intent = new Intent(MyApplication.getContext(),SetRegulationActivity.class);
+                    case R.id.nav_set_noon_regulation:
+                        intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
+                        intent.putExtra("pattern",PATTERN_NOON);
+                        startActivityForResult(intent,SET_REGULATION);
+                        break;
+                    case R.id.nav_set_night_regulation:
+                        intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
+                        intent.putExtra("pattern",PATTERN_NIGHT);
                         startActivityForResult(intent,SET_REGULATION);
                         break;
                     default:
@@ -264,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MyApplication.getContext(),RecordSituationActivity.class);
+                Intent intent = new Intent(mApplication.getContext(),RecordSituationActivity.class);
                 intent.putExtra("number",number);
                 intent.putExtra("currentGrade",currentGrade);
                 intent.putExtra("currentRoom",currentRoom);
@@ -346,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     /*检查完成*/
                     Intent intent = new Intent(MainActivity.this,NotifyCheckingSituationActivity.class);
+                    intent.putExtra("pattern",pattern);
                     startActivityForResult(intent,NOTIFY_CHECKING_SITUATION);
                 }
             }
@@ -356,6 +380,14 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser == null){
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivityForResult(intent,LOGIN);
+        }
+
+        /*强制设置检查顺序*/
+        if (max == 0) {
+            Toast.makeText(MainActivity.this,"请先设置检查顺序",Toast.LENGTH_SHORT);
+            Intent intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
+            intent.putExtra("pattern",pattern);
+            startActivityForResult(intent,SET_REGULATION);
         }
 
     }
@@ -371,7 +403,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 TextView userNameText = findViewById(R.id.username_text);
-                if (AVUser.getCurrentUser() != null) userNameText.setText("欢迎你，"+AVUser.getCurrentUser().getUsername());
+                if ((AVUser.getCurrentUser() != null) && (max != 0)) userNameText.setText("欢迎你，"+AVUser.getCurrentUser().getUsername());
             }
         });
     }
@@ -411,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
                     takePhotoButtonMode = DELETE;
                     takePhotoButton.setImageResource(android.R.drawable.ic_menu_delete);
                     /*实时保存状态*/
-                    SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = pref.edit();
                     editor.putBoolean("isError",true).putInt("CurrentNumber",number).apply();
                 }
                 break;
@@ -483,7 +515,6 @@ public class MainActivity extends AppCompatActivity {
                     classArrayRoom = new int[55];
                     for (int j = 1;j <= 54;j++) classArrayRoom[j] = 0;//初始化classArrayRoom[]
                     max = 0;
-                    SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
                     for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
                         for (classroom = 1;classroom <= 18;classroom++){
                             number = pref.getInt(grade+""+classroom,0);
@@ -493,6 +524,13 @@ public class MainActivity extends AppCompatActivity {
                                 if (max<number) max = number;
                             }
                         }
+                    }
+                    /*强制设置检查顺序*/
+                    if (max == 0) {
+                        Toast.makeText(MainActivity.this,"请先设置检查顺序",Toast.LENGTH_SHORT);
+                        Intent intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
+                        intent.putExtra("pattern",pattern);
+                        startActivityForResult(intent,SET_REGULATION);
                     }
                     /*读取第一个班级并显示*/
                     number = 1;
