@@ -418,8 +418,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case android.R.id.home:
+            case android.R.id.home://打开侧边栏
                 mDrawerLayout.openDrawer(GravityCompat.START);
+                break;
+            case R.id.switch_class://切换班级
+                Intent intent = new Intent(MainActivity.this,NotifyCheckingSituationActivity.class);
+                intent.putExtra("pattern",pattern);
+                startActivityForResult(intent,NOTIFY_CHECKING_SITUATION);
                 break;
             default:
                 break;
@@ -453,6 +458,7 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK){
                     /*开始录入应到实到数据*/
                     Intent intent = new Intent(MainActivity.this,RecordImageDataActivity.class);
+                    intent.putExtra("pattern",pattern);
                     startActivityForResult(intent,RECORD_IMAGE_DATA);
                 } else if (resultCode == RESULT_CANCELED) {
                     /*重新录入本班级数据*/

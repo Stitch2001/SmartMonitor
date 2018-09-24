@@ -107,18 +107,17 @@ public class SetRegulationActivity extends AppCompatActivity  {
             pref = getSharedPreferences("RegulationNoonData",MODE_PRIVATE);
             toolbar.setTitle("设置午休检查顺序");
         }
-        else if (pattern == PATTERN_NIGHT) {
+        else{
             pref = getSharedPreferences("RegulationNightData",MODE_PRIVATE);
             toolbar.setTitle("设置晚修检查顺序");
         }
-        else pref = getSharedPreferences("null",MODE_PRIVATE);
 
         /*读取该年级中的检查顺序并重新排列*/
         for (int i = 0;i <= 54;i++) regulationList.add(new mGradeAndClass(NON_GRADE,0, 0));
         max = 0;
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
-                int array = pref.getInt(grade+""+classroom+"",0);
+                int array = pref.getInt(grade+""+classroom,0);
                 if (array != 0){
                     regulationList.get(array).setGrade(grade);
                     regulationList.get(array).setClassroom(classroom);
@@ -281,6 +280,8 @@ public class SetRegulationActivity extends AppCompatActivity  {
                 for (int j = 1;j <= 18;j++) classroomBool[j] = false;//初始化classroomBool[]
                 classArray = new int[19];
                 for (int j = 1;j <= 18;j++) classArray[j] = 0;//初始化classArray[]
+                classIndex = new int[19];
+                for (int j = 1;j <= 18;j++) classIndex[j] = 0;//初始化classIndex[]
                 gradeMax = 1;
                 classroomBool[regulationList.get(i).getClassroom()] = true;
                 classArray[regulationList.get(i).getClassroom()] = regulationList.get(i).getArray();

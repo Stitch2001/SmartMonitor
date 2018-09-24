@@ -48,6 +48,9 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private static final int UPLOAD_FAILED = 0;
     private static final int UPLOAD_OK = 1;
 
+    private static final int PATTERN_NOON = 0;
+    private static final int PATTERN_NIGHT = 1;
+
     private ImageView photoImage;
     private TextView classNameView;
     private FloatingActionButton lastClassButton;
@@ -58,11 +61,13 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private TextInputEditText temporary;
     private ProgressBar progressBar;
 
-    private int grade = 1,classroom = 1,currentGrade = 1,currentRoom = 1,number = 1,max = 1,oughtNum,factNum,leaveNum,temporaryNum;
+    private int grade = 1,classroom = 1,currentGrade = 1,currentRoom = 1,number = 1,max = 1,
+            oughtNum,factNum,leaveNum,temporaryNum,pattern;
     private int[] classArrayGrade = new int[55];
     private int[] classArrayRoom = new int[55];
     private AVException e = null;
     private File classImage;
+    private SharedPreferences pref;
 
     private Handler handler = new Handler() {
 
@@ -105,8 +110,18 @@ public class RecordImageDataActivity extends AppCompatActivity {
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
 
+        /*判断是设置午休顺序还是晚修顺序*/
+        pattern = getIntent().getIntExtra("pattern",-1);
+        if (pattern == PATTERN_NOON) {
+            pref = getSharedPreferences("RegulationNoonData",MODE_PRIVATE);
+            toolbar.setTitle("设置午休检查顺序");
+        }
+        else{
+            pref = getSharedPreferences("RegulationNightData",MODE_PRIVATE);
+            toolbar.setTitle("设置晚修检查顺序");
+        }
+
         /*读取班级顺序并储存*/
-        SharedPreferences pref = getSharedPreferences("RegulationData",MODE_PRIVATE);
         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
             for (classroom = 1;classroom <= 18;classroom++){
                 number = pref.getInt(grade+""+classroom+"",0);
@@ -256,7 +271,6 @@ public class RecordImageDataActivity extends AppCompatActivity {
         });
     }
 
-    private boolean result = false;
     private boolean saveData(final SharedPreferences pref){
         String oughtString = ought.getText().toString();
         String factString = fact.getText().toString();
@@ -404,7 +418,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         }
                     }
                     /*清除非正常关闭标志*/
-                    SharedPreferences.Editor editor = getSharedPreferences("RegulationData",MODE_PRIVATE).edit();
+                    SharedPreferences.Editor editor = RecordImageDataActivity.this.pref.edit();
                     editor.putBoolean("isError",false).apply();
                     /*发送检查完成消息*/
                     message.what = UPLOAD_OK;
