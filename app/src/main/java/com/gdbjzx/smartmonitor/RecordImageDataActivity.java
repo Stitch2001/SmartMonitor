@@ -74,7 +74,6 @@ public class RecordImageDataActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case UPLOAD_OK:
-                    progressBar.setProgress(100);
                     progressBar.setVisibility(View.GONE);
                     setResult(RESULT_OK);
                     finish();
@@ -318,20 +317,12 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private boolean uploadData(final SharedPreferences pref){
         progressBar.setVisibility(View.VISIBLE);
         /*开始提交数据*/
-        final Handler updateDataHandler = new Handler(){
-            public void handleMessage(Message msg){
-                progressBar.setProgress(msg.arg1);
-                Log.d("msg.arg1",msg.arg1+"");
-            }
-        };
         new Thread(new Runnable() {
-            Runnable updateProgressThread;
             @Override
             public void run() {
                 Message message = new Message();
                 ArrayList<AVObject> classDataList = new ArrayList<>();
                 ArrayList<AVObject> situationDataList = new ArrayList<>();
-                ArrayList<AVFile> classImageList = new ArrayList<>();
                 for (number = 1;number<=max;number++){
                     /*录入应到实到数据*/
                     AVObject classData = new AVObject("ClassData");
@@ -343,7 +334,6 @@ public class RecordImageDataActivity extends AppCompatActivity {
                     classData.put("temporary",pref.getInt("temporary"+number,0));
                     classData.put("absent",pref.getInt("absent"+number,0));
                     classData.put("checker", AVUser.getCurrentUser().getUsername());
-                    classDataList.add(classData);
                     /*录入图片*/
                     classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
                     if (classImage.exists()){
@@ -360,11 +350,12 @@ public class RecordImageDataActivity extends AppCompatActivity {
                                 case JUNIOR_3:fileName = "初三（"+classArrayRoom[number]+"）班";break;
                             }
                             AVFile avFile = AVFile.withFile(fileName,compressedImage);
-                            classImageList.add(avFile);
+                            classData.put("image",avFile);
                         } catch (IOException e){
                             e.printStackTrace();
                         }
                     }
+                    classDataList.add(classData);
                     /*录入扣分情况*/
                     for (int i = 1;i <= pref.getInt("listNum"+number,0);i++){
                         AVObject situationData = new AVObject("SituationData");
@@ -382,27 +373,6 @@ public class RecordImageDataActivity extends AppCompatActivity {
                 try {
                     AVObject.saveAll(classDataList);
                     AVObject.saveAll(situationDataList);
-                    for (AVFile avFile:classImageList) avFile.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            updateDataHandler.removeCallbacks(updateProgressThread);
-                            if (e != null) RecordImageDataActivity.this.e = e;
-                        }
-                    }, new ProgressCallback() {
-                        @Override
-                        public void done(final Integer integer) {
-                            updateProgressThread = new Runnable() {
-                                @Override
-                                public void run() {
-                                    Message message = updateDataHandler.obtainMessage();
-                                    message.arg1 = integer;
-                                    updateDataHandler.sendMessage(message);
-                                }
-                            };
-                            updateDataHandler.post(updateProgressThread);
-                            Log.d("progress",integer+"");
-                        }
-                    });
                 } catch (AVException e){
                     e.printStackTrace();
                     RecordImageDataActivity.this.e = e;

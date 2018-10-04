@@ -14,7 +14,7 @@
             android:icon="@android:drawable/ic_menu_manage"
             android:title="设置晚修检查顺序" />
         <item
-            android:id="@+id/nav_activity"
+            android:id="@+id/nav_big_event"
             android:icon="@android:drawable/ic_menu_myplaces"
             android:title="大型活动" />
         <item

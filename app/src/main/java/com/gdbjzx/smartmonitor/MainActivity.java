@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,8 +64,11 @@ public class MainActivity extends AppCompatActivity {
 
     private  enum ShowMode {SHOW_IMAGE,SHOW_BLANK};
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+
     private ImageView photoImage;
     private TextView classNameView;
     private FloatingActionButton takePhotoButton;
@@ -156,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             /*提醒用户正在读取数据*/
                             number = pref.getInt("CurrentNumber",1);
+                            Log.d("GetCurrentNumber",number+"");
                             /*发送消息，更新UI*/
                             Message message = new Message();
                             message.what = RENEW_VIEW;
@@ -224,6 +229,10 @@ public class MainActivity extends AppCompatActivity {
                         intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
                         intent.putExtra("pattern",PATTERN_NIGHT);
                         startActivityForResult(intent,SET_REGULATION);
+                        break;
+                    case R.id.nav_big_event:
+                        intent = new Intent(mApplication.getContext(),BigEventActivity.class);
+                        startActivity(intent);
                         break;
                     default:
                 }
@@ -450,6 +459,7 @@ public class MainActivity extends AppCompatActivity {
                     /*实时保存状态*/
                     SharedPreferences.Editor editor = pref.edit();
                     editor.putBoolean("isError",true).putInt("CurrentNumber",number).apply();
+                    Log.d("CurrentNumber",number+"");
                 }
                 break;
             case RECORD_SITUATION:

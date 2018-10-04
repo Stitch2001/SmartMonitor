@@ -65,7 +65,8 @@
         <activity android:name=".SetRegulationActivity" />
         <activity android:name=".RecordSituationActivity" />
         <activity android:name=".NotifyCheckingSituationActivity" />
-        <activity android:name=".RecordImageDataActivity"></activity>
+        <activity android:name=".RecordImageDataActivity" />
+        <activity android:name=".BigEventActivity"></activity>
     </application>
 
 </manifest>
