@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -33,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:textAlignment="center"
-                android:text="图片(0/0)"/>
+                android:text="图片(0/0)"
+                android:visibility="invisible"/>
 
             <ImageView
                 android:id="@+id/event_image"
@@ -73,7 +75,7 @@
             android:id="@+id/no_task_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="暂无大型活动通知"
+            android:text="正在获取..."
             android:layout_centerInParent="true"/>
 
     </RelativeLayout>

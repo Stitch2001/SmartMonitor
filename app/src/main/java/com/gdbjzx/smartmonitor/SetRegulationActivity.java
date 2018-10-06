@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
 
+import com.avos.avoscloud.AVUser;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,10 +26,21 @@ import java.util.Set;
 
 public class SetRegulationActivity extends AppCompatActivity  {
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     private static final int LOGIN = 1;
+    private static final int TAKE_PHOTO = 2;
+    private static final int RECORD_SITUATION = 3;
+    private static final int NOTIFY_CHECKING_SITUATION = 4;
+    private static final int RECORD_IMAGE_DATA = 5;
+    private static final int SET_REGULATION = 6;
+
+    private static final int PATTERN_NOON = 0;
+    private static final int PATTERN_NIGHT = 1;
 
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationView;
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
     private SharedPreferences.Editor editor;
@@ -40,9 +53,6 @@ public class SetRegulationActivity extends AppCompatActivity  {
     private static final int JUNIOR_1 = 3;
     private static final int JUNIOR_2 = 4;
     private static final int JUNIOR_3 = 5;
-
-    private static final int PATTERN_NOON = 0;
-    private static final int PATTERN_NIGHT = 1;
 
     public int max,gradeMax,pattern;
     public List<mGradeAndClass> regulationList = new ArrayList<>();
@@ -63,14 +73,16 @@ public class SetRegulationActivity extends AppCompatActivity  {
         setResult(RESULT_OK);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
-        /*设置顶部栏*/
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        /*设置Toolbar为默认ActionBar，设置图标*/
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null){
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_sort_by_size);
-        }//设置Toolbar为默认ActionBar，设置图标
+        }
 
         /*设置导航栏*/
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -86,16 +98,29 @@ public class SetRegulationActivity extends AppCompatActivity  {
                         editor.putBoolean("isAuto",false);
                         editor.apply();
                         /*阻止自动登录*/
-                        intent = new Intent(SetRegulationActivity.this,LoginActivity.class);
+                        AVUser.logOut();
+                        intent = new Intent(mApplication.getContext(),LoginActivity.class);
                         startActivityForResult(intent,LOGIN);
                         break;
-                    case R.id.nav_monitor:
-                        intent = new Intent(SetRegulationActivity.this,MainActivity.class);
+                    case R.id.nav_set_noon_regulation:
+                        intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
+                        intent.putExtra("pattern",PATTERN_NOON);
+                        startActivityForResult(intent,SET_REGULATION);
+                        break;
+                    case R.id.nav_set_night_regulation:
+                        intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
+                        intent.putExtra("pattern",PATTERN_NIGHT);
+                        startActivityForResult(intent,SET_REGULATION);
+                        break;
+                    case R.id.nav_big_event:
+                        intent = new Intent(mApplication.getContext(),BigEventActivity.class);
                         startActivity(intent);
                         break;
                     default:
+                        break;
                 }
                 mDrawerLayout.closeDrawers();
+                SetRegulationActivity.this.finish();
                 return true;
             }
         });
