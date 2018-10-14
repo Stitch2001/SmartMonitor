@@ -123,6 +123,10 @@ public class BigEventActivity extends AppCompatActivity {
                         intent = new Intent(mApplication.getContext(),BigEventActivity.class);
                         startActivity(intent);
                         break;
+                    case R.id.nav_set_alarm:
+                        intent = new Intent(mApplication.getContext(),AlarmSettingsActivity.class);
+                        startActivity(intent);
+                        break;
                     default:
                 }
                 mDrawerLayout.closeDrawers();

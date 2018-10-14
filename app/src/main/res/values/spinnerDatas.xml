@@ -29,4 +29,29 @@
         <item>17</item>
         <item>18</item>
     </string-array>
+
+    <string-array name="spinnerAlarmGradeDatas">
+        <item>年级</item>
+        <item>高一</item>
+        <item>高二</item>
+        <item>高三</item>
+        <item>初一</item>
+        <item>初二</item>
+        <item>初三</item>
+    </string-array>
+
+    <string-array name="spinnerAlarmDayDatas">
+        <item>星期</item>
+        <item>周一</item>
+        <item>周二</item>
+        <item>周三</item>
+        <item>周四</item>
+        <item>周五</item>
+    </string-array>
+
+    <string-array name="spinnerAlarmTimeDatas">
+        <item>时间</item>
+        <item>午休</item>
+        <item>晚修</item>
+    </string-array>
 </resources>

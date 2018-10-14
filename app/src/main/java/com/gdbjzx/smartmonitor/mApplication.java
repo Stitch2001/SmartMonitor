@@ -13,12 +13,17 @@ public class mApplication extends Application {
 
     private static Context context;
 
+    public static int version;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
         /*全局获取Context的配置*/
         context = getApplicationContext();
+
+        /*配置版本序号*/
+        version = 1;
 
         /*操作数据库的配置*/
         // 初始化参数依次为 this, AppId, AppKey

@@ -1,16 +1,21 @@
 package com.gdbjzx.smartmonitor;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -28,23 +33,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetDataCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     private static final int LOGIN = 1;
     private static final int TAKE_PHOTO = 2;
     private static final int RECORD_SITUATION = 3;
     private static final int NOTIFY_CHECKING_SITUATION = 4;
     private static final int RECORD_IMAGE_DATA = 5;
     private static final int SET_REGULATION = 6;
+
+    private static final int PATTERN_NOON = 0;
+    private static final int PATTERN_NIGHT = 1;
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static final int SENIOR_1 = 0;
     private static final int SENIOR_2 = 1;
@@ -58,9 +79,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOADING = 0;
     private static final int RENEW_VIEW = 1;
-
-    private static final int PATTERN_NOON = 0;
-    private static final int PATTERN_NIGHT = 1;
 
     private  enum ShowMode {SHOW_IMAGE,SHOW_BLANK};
 
@@ -76,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton lastClassButton;
     private FloatingActionButton nextClassButton;
 
-    private int grade,classroom,currentGrade,currentRoom,number,max,takePhotoButtonMode,pattern = 1;
+    private int grade = 1,classroom = 1,currentGrade = 1,currentRoom = 1,number = 1,max = 1,takePhotoButtonMode = 1,pattern = 1;
     private int[] classArrayGrade = new int[55];
     private int[] classArrayRoom = new int[55];
     private File classImage;
@@ -123,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         /*判断应该检查午休还是晚修*/
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH");// HH:mm:ss
         Date date = new Date(System.currentTimeMillis());//获取当前时间
-        short formatedDate = Short.parseShort(simpleDateFormat.format(date).toString());
+        final short formatedDate = Short.parseShort(simpleDateFormat.format(date).toString());
         if ((formatedDate >= 0) && (formatedDate <= 15)) {
             pattern = PATTERN_NOON;
             pref = getSharedPreferences("RegulationNoonData",MODE_PRIVATE);
@@ -144,6 +162,68 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
+        /*检查更新*/
+        AVQuery<AVObject> query = new AVQuery<>("Updates");
+        query.whereExists("file");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(final List<AVObject> list, AVException e) {
+                for (int i = 0;i <= list.size()-1;i++){
+                    if (list.get(i).getInt("version") > mApplication.version){
+                        final AVObject currentList = list.get(i);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("检查更新")
+                                .setMessage("有新版本更新，是否更新？")
+                                .setCancelable(true);
+                        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(MainActivity.this,"正在下载...",Toast.LENGTH_SHORT);
+                                AVFile avfile = currentList.getAVFile("file");
+                                avfile.getDataInBackground(new GetDataCallback() {
+                                    @Override
+                                    public void done(byte[] bytes, AVException e) {
+                                        if (e == null){
+                                            String directory = Environment
+                                                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                                    .getPath();
+                                            File file = new File(directory+"/smartmonitor.apk");
+                                            FileOutputStream stream = null;
+                                            try{
+                                                verifyStoragePermissions(MainActivity.this);
+                                                file.createNewFile();
+                                                stream = new FileOutputStream(file);
+                                                stream.write(bytes);
+                                            } catch (Exception e1){
+                                                e1.printStackTrace();
+                                            } finally {
+                                                try {
+                                                    stream.close();
+                                                    /*安装软件*/
+                                                    Intent intent = new Intent();
+                                                    intent.setAction(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file),
+                                                            "application/vnd.android.package-archive")
+                                                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    startActivity(intent);
+                                                    Log.d("stream","success");
+                                                } catch (Exception e1){
+                                                    e1.printStackTrace();
+                                                }
+                                            }
+                                        } else {
+                                            Toast.makeText(MainActivity.this,"下载错误:"+e,Toast.LENGTH_LONG).show();
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        dialog.setNegativeButton("取消",null).show();
+                    }
+                }
+            }
+        });
 
         /*非正常关闭恢复*/
         final Boolean isError = pref.getBoolean("isError",false);
@@ -232,6 +312,14 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.nav_big_event:
                         intent = new Intent(mApplication.getContext(),BigEventActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_set_alarm:
+                        intent = new Intent(mApplication.getContext(),AlarmSettingsActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_about:
+                        intent = new Intent(mApplication.getContext(),AboutActivity.class);
                         startActivity(intent);
                         break;
                     default:
@@ -580,6 +668,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
             default:
                 break;
+        }
+    }
+
+    /*申请读写权限*/
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE };
+    public static void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
         }
     }
 }

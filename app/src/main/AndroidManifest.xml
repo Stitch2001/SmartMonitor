@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- 基础模块 END -->
     <application
@@ -66,7 +67,15 @@
         <activity android:name=".RecordSituationActivity" />
         <activity android:name=".NotifyCheckingSituationActivity" />
         <activity android:name=".RecordImageDataActivity" />
-        <activity android:name=".BigEventActivity"></activity>
+        <activity android:name=".BigEventActivity" />
+        <activity android:name=".AlarmSettingsActivity" />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>
