@@ -187,7 +187,7 @@ public class BigEventActivity extends AppCompatActivity {
                 //未知错误：2
                 return false;
             }
-            if (list.size() == 0) {
+            if (list == null) {
                 readingSignal = NO_TASK;
                 return false;
             } else {

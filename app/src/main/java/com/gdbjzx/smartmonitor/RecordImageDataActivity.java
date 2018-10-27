@@ -324,8 +324,20 @@ public class RecordImageDataActivity extends AppCompatActivity {
             public void run() {
                 /*获取今天是星期几*/
                 Calendar c = Calendar.getInstance();
-                c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-                Integer dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);//Calendar类每周的周一是SunDay
+                /*获取当前日期*/
+                String year = Integer.toString(c.get(Calendar.YEAR));
+                String month,dayOfMonth;
+                if (c.get(Calendar.MONTH)+1<10) {//Calendar类的月数是从0算起的，可能是文化差异？
+                    month = "0"+Integer.toString(c.get(Calendar.MONTH)+1);
+                } else {
+                    month = Integer.toString(c.get(Calendar.MONTH)+1);
+                }
+                if (c.get(Calendar.DAY_OF_MONTH)<10) {
+                    dayOfMonth = "0"+Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+                } else {
+                    dayOfMonth = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+                }
                 Message message = new Message();
                 ArrayList<AVObject> classDataList = new ArrayList<>();
                 ArrayList<AVObject> situationDataList = new ArrayList<>();
@@ -341,6 +353,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                     classData.put("absent",pref.getInt("absent"+number,0));
                     classData.put("checker", AVUser.getCurrentUser().getUsername());
                     classData.put("dayOfWeek",dayOfWeek);
+                    classData.put("date",year+"-"+month+"-"+dayOfMonth);
                     classData.put("pattern",pattern);
                     /*录入图片*/
                     classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
