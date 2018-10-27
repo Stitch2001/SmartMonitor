@@ -2,6 +2,8 @@ package com.gdbjzx.smartmonitor;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 
 import com.avos.avoscloud.AVOSCloud;
@@ -24,7 +26,13 @@ public class mApplication extends Application {
         context = getApplicationContext();
 
         /*配置版本号*/
-        version = 2;
+        version = 4;
+
+        /*Android7.0以上版本打开相机闪退修复*/
+        if (Build.VERSION.SDK_INT >= 24) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+        }
 
         /*操作数据库的配置*/
         // 初始化参数依次为 this, AppId, AppKey

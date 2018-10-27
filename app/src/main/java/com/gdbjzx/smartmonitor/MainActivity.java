@@ -2,6 +2,7 @@ package com.gdbjzx.smartmonitor;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -138,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         photoImage = (ImageView) findViewById(R.id.photo_image);
         classNameView = (TextView) findViewById(R.id.class_name);
+        /*权限处理*/
+        verifyStoragePermissions(MainActivity.this);
 
         /*判断应该检查午休还是晚修*/
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH");// HH:mm:ss
@@ -302,7 +306,9 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }//检测是否存在图片，存在则删除
                     if (Build.VERSION.SDK_INT >= 24){
-                        imageUri = FileProvider.getUriForFile(MainActivity.this,"com.gdbjzx.smartmonitor",classImage);
+                        ContentValues contentValues = new ContentValues(1);
+                        contentValues.put(MediaStore.Images.Media.DATA,classImage.getAbsolutePath());
+                        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
                     } else {
                         imageUri = Uri.fromFile(classImage);
                     }//获取图片的本地真实路径
@@ -661,7 +667,6 @@ public class MainActivity extends AppCompatActivity {
                                                 File file = new File(directory + "/smartmonitor.apk");
                                                 FileOutputStream stream = null;
                                                 try {
-                                                    verifyStoragePermissions(MainActivity.this);
                                                     file.createNewFile();
                                                     stream = new FileOutputStream(file);
                                                     stream.write(bytes);
