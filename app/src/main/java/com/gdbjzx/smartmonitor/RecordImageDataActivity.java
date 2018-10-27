@@ -33,6 +33,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import id.zelory.compressor.Compressor;
 
@@ -320,6 +322,10 @@ public class RecordImageDataActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                /*获取今天是星期几*/
+                Calendar c = Calendar.getInstance();
+                c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                Integer dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
                 Message message = new Message();
                 ArrayList<AVObject> classDataList = new ArrayList<>();
                 ArrayList<AVObject> situationDataList = new ArrayList<>();
@@ -334,6 +340,8 @@ public class RecordImageDataActivity extends AppCompatActivity {
                     classData.put("temporary",pref.getInt("temporary"+number,0));
                     classData.put("absent",pref.getInt("absent"+number,0));
                     classData.put("checker", AVUser.getCurrentUser().getUsername());
+                    classData.put("dayOfWeek",dayOfWeek);
+                    classData.put("pattern",pattern);
                     /*录入图片*/
                     classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
                     if (classImage.exists()){
@@ -366,6 +374,8 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         situationData.put("score",pref.getInt("score"+number+""+i,0));
                         situationData.put("date",pref.getString("date"+number+""+i,""));
                         situationData.put("checker",AVUser.getCurrentUser().getUsername());
+                        situationData.put("dayOfWeek",dayOfWeek);
+                        situationData.put("pattern",pattern);
                         situationDataList.add(situationData);
                     }
                 }

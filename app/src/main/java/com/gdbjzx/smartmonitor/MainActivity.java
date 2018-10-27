@@ -40,6 +40,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.ProgressCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -164,66 +165,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /*检查更新*/
-        AVQuery<AVObject> query = new AVQuery<>("Updates");
-        query.whereExists("file");
-        query.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(final List<AVObject> list, AVException e) {
-                for (int i = 0;i <= list.size()-1;i++){
-                    if (list.get(i).getInt("version") > mApplication.version){
-                        final AVObject currentList = list.get(i);
-                        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("检查更新")
-                                .setMessage("有新版本更新，是否更新？")
-                                .setCancelable(true);
-                        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(MainActivity.this,"正在下载...",Toast.LENGTH_SHORT);
-                                AVFile avfile = currentList.getAVFile("file");
-                                avfile.getDataInBackground(new GetDataCallback() {
-                                    @Override
-                                    public void done(byte[] bytes, AVException e) {
-                                        if (e == null){
-                                            String directory = Environment
-                                                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                                    .getPath();
-                                            File file = new File(directory+"/smartmonitor.apk");
-                                            FileOutputStream stream = null;
-                                            try{
-                                                verifyStoragePermissions(MainActivity.this);
-                                                file.createNewFile();
-                                                stream = new FileOutputStream(file);
-                                                stream.write(bytes);
-                                            } catch (Exception e1){
-                                                e1.printStackTrace();
-                                            } finally {
-                                                try {
-                                                    stream.close();
-                                                    /*安装软件*/
-                                                    Intent intent = new Intent();
-                                                    intent.setAction(Intent.ACTION_VIEW).setDataAndType(Uri.fromFile(file),
-                                                            "application/vnd.android.package-archive")
-                                                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                    startActivity(intent);
-                                                    Log.d("stream","success");
-                                                } catch (Exception e1){
-                                                    e1.printStackTrace();
-                                                }
-                                            }
-                                        } else {
-                                            Toast.makeText(MainActivity.this,"下载错误:"+e,Toast.LENGTH_LONG).show();
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                        dialog.setNegativeButton("取消",null).show();
-                    }
-                }
-            }
-        });
+        checkNewVersion();
 
         /*非正常关闭恢复*/
         final Boolean isError = pref.getBoolean("isError",false);
@@ -609,6 +551,7 @@ public class MainActivity extends AppCompatActivity {
                     takePhotoButtonMode = CAMERA;
                     takePhotoButton.setImageResource(android.R.drawable.ic_menu_camera);
                     nextClassButton.setImageResource(android.R.drawable.ic_media_ff);
+                    checkNewVersion();
                 }
                 break;
             case SET_REGULATION:
@@ -685,5 +628,91 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE);
         }
+    }
+
+    private void checkNewVersion(){
+        /*检查更新*/
+        AVQuery<AVObject> query = new AVQuery<>("Updates");
+        query.whereExists("file");
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(final List<AVObject> list, AVException e) {
+                if (list != null){
+                    for (int i = 0;i <= list.size()-1;i++){
+                        if (list.get(i).getInt("version") > mApplication.version){
+                            final AVObject currentList = list.get(i);
+                            final TextView currentText = (TextView) findViewById(R.id.current_text);
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle("检查更新")
+                                    .setMessage("有新版本更新，是否更新？")
+                                    .setCancelable(true);
+                            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Toast.makeText(MainActivity.this,"正在下载...",Toast.LENGTH_SHORT);
+                                    AVFile avfile = currentList.getAVFile("file");
+                                    avfile.getDataInBackground(new GetDataCallback() {
+                                        @Override
+                                        public void done(byte[] bytes, AVException e) {
+                                            if (e == null) {
+                                                String directory = Environment
+                                                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                                        .getPath();
+                                                File file = new File(directory + "/smartmonitor.apk");
+                                                FileOutputStream stream = null;
+                                                try {
+                                                    verifyStoragePermissions(MainActivity.this);
+                                                    file.createNewFile();
+                                                    stream = new FileOutputStream(file);
+                                                    stream.write(bytes);
+                                                } catch (Exception e1) {
+                                                    e1.printStackTrace();
+                                                } finally {
+                                                    try {
+                                                        stream.close();
+                                                        /*安装软件*/
+                                                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+                                                            Uri apkUri = FileProvider.getUriForFile(MainActivity.this
+                                                                    , "com.shawpoo.app.fileprovider", file);
+                                                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                                            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                                                        } else {
+                                                            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                                                        }
+                                                        startActivity(intent);
+                                                        Log.d("stream", "success");
+                                                    } catch (Exception e1) {
+                                                        e1.printStackTrace();
+                                                    }
+                                                }
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "下载错误:" + e, Toast.LENGTH_LONG).show();
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }, new ProgressCallback() {
+                                        @Override
+                                        public void done(Integer integer) {
+                                            currentText.setText("已下载"+integer+"%");
+                                        }
+                                    });
+                                }
+                            });
+                            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    if (currentList.getBoolean("significant")){
+                                        Toast.makeText(MainActivity.this,"重要更新，请更新后再使用",Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                }
+                            }).show();
+                        }
+                    }
+                }
+            }
+        });
     }
 }

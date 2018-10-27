@@ -2,6 +2,7 @@ package com.gdbjzx.smartmonitor;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.avos.avoscloud.AVOSCloud;
 
@@ -22,8 +23,8 @@ public class mApplication extends Application {
         /*全局获取Context的配置*/
         context = getApplicationContext();
 
-        /*配置版本序号*/
-        version = 1;
+        /*配置版本号*/
+        version = 2;
 
         /*操作数据库的配置*/
         // 初始化参数依次为 this, AppId, AppKey
@@ -33,6 +34,13 @@ public class mApplication extends Application {
 
     public static Context getContext(){
         return context;
+    }
+
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this) ;
     }
 
 }
