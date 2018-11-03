@@ -539,7 +539,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case RECORD_IMAGE_DATA:
                 if (resultCode == RESULT_OK){
-                    Toast.makeText(MainActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
                     /*读取第一个班级并显示*/
                     number = 1;
                     currentGrade = classArrayGrade[number];
@@ -645,9 +644,10 @@ public class MainActivity extends AppCompatActivity {
             public void done(final List<AVObject> list, AVException e) {
                 if (list != null){
                     for (int i = 0;i <= list.size()-1;i++){
-                        if (list.get(i).getInt("version") > mApplication.version){
+                        final int version = list.get(i).getInt("version");
+                        if (version > mApplication.version){
                             final AVObject currentList = list.get(i);
-                            final TextView currentText = (TextView) findViewById(R.id.current_text);
+                            final TextView progressText = (TextView) findViewById(R.id.progress_text);
                             AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
                                     .setTitle("检查更新")
                                     .setMessage("有新版本更新，是否更新？")
@@ -664,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
                                                 String directory = Environment
                                                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                                                         .getPath();
-                                                File file = new File(directory + "/smartmonitor.apk");
+                                                File file = new File(directory + "/smartmonitor"+version+".apk");
                                                 FileOutputStream stream = null;
                                                 try {
                                                     file.createNewFile();
@@ -700,7 +700,7 @@ public class MainActivity extends AppCompatActivity {
                                     }, new ProgressCallback() {
                                         @Override
                                         public void done(Integer integer) {
-                                            currentText.setText("已下载"+integer+"%");
+                                            progressText.setText("已下载"+integer+"%");
                                         }
                                     });
                                 }

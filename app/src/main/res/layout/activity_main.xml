@@ -110,7 +110,7 @@
             app:srcCompat="@color/avoscloud_feedback_input_wrap_background" />
 
         <TextView
-            android:id="@+id/current_text"
+            android:id="@+id/progress_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"

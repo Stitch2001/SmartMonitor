@@ -3,6 +3,7 @@ package com.gdbjzx.smartmonitor;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.ProgressCallback;
@@ -70,25 +72,8 @@ public class RecordImageDataActivity extends AppCompatActivity {
     private AVException e = null;
     private File classImage;
     private SharedPreferences pref;
+    private boolean isUploadedClass = false,isUploadedSituation = false;
 
-    private Handler handler = new Handler() {
-
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case UPLOAD_OK:
-                    progressBar.setVisibility(View.GONE);
-                    setResult(RESULT_OK);
-                    finish();
-                    break;
-                case UPLOAD_FAILED:
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(RecordImageDataActivity.this,"上传失败，请检查网络后重试",Toast.LENGTH_SHORT);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -318,110 +303,145 @@ public class RecordImageDataActivity extends AppCompatActivity {
 
     private boolean uploadData(final SharedPreferences pref){
         progressBar.setVisibility(View.VISIBLE);
+        nextClassButton.setEnabled(false);
         /*开始提交数据*/
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                /*获取今天是星期几*/
-                Calendar c = Calendar.getInstance();
-                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);//Calendar类每周的周一是SunDay
-                /*获取当前日期*/
-                String year = Integer.toString(c.get(Calendar.YEAR));
-                String month,dayOfMonth;
-                if (c.get(Calendar.MONTH)+1<10) {//Calendar类的月数是从0算起的，可能是文化差异？
-                    month = "0"+Integer.toString(c.get(Calendar.MONTH)+1);
-                } else {
-                    month = Integer.toString(c.get(Calendar.MONTH)+1);
-                }
-                if (c.get(Calendar.DAY_OF_MONTH)<10) {
-                    dayOfMonth = "0"+Integer.toString(c.get(Calendar.DAY_OF_MONTH));
-                } else {
-                    dayOfMonth = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
-                }
-                Message message = new Message();
-                ArrayList<AVObject> classDataList = new ArrayList<>();
-                ArrayList<AVObject> situationDataList = new ArrayList<>();
-                for (number = 1;number<=max;number++){
-                    /*录入应到实到数据*/
-                    AVObject classData = new AVObject("ClassData");
-                    classData.put("grade",classArrayGrade[number]);
-                    classData.put("classroom",classArrayRoom[number]);
-                    classData.put("ought",pref.getInt("ought"+number,0));
-                    classData.put("fact",pref.getInt("fact"+number,0));
-                    classData.put("leave",pref.getInt("leave"+number,0));
-                    classData.put("temporary",pref.getInt("temporary"+number,0));
-                    classData.put("absent",pref.getInt("absent"+number,0));
-                    classData.put("checker", AVUser.getCurrentUser().getUsername());
-                    classData.put("dayOfWeek",dayOfWeek);
-                    classData.put("date",year+"-"+month+"-"+dayOfMonth);
-                    classData.put("pattern",pattern);
-                    /*录入图片*/
-                    classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
-                    if (classImage.exists()){
-                        try {
-                            File compressedImage = new Compressor(RecordImageDataActivity.this)
-                                    .setMaxHeight(150).setQuality(23).compressToFile(classImage);
-                            String fileName = "";
-                            switch (classArrayGrade[number]){
-                                case SENIOR_1:fileName = "高一（"+classArrayRoom[number]+"）班";break;
-                                case SENIOR_2:fileName = "高二（"+classArrayRoom[number]+"）班";break;
-                                case SENIOR_3:fileName = "高三（"+classArrayRoom[number]+"）班";break;
-                                case JUNIOR_1:fileName = "初一（"+classArrayRoom[number]+"）班";break;
-                                case JUNIOR_2:fileName = "初二（"+classArrayRoom[number]+"）班";break;
-                                case JUNIOR_3:fileName = "初三（"+classArrayRoom[number]+"）班";break;
-                            }
-                            AVFile avFile = AVFile.withFile(fileName,compressedImage);
-                            classData.put("image",avFile);
-                        } catch (IOException e){
-                            e.printStackTrace();
-                        }
-                    }
-                    classDataList.add(classData);
-                    /*录入扣分情况*/
-                    for (int i = 1;i <= pref.getInt("listNum"+number,0);i++){
-                        AVObject situationData = new AVObject("SituationData");
-                        situationData.put("grade",classArrayGrade[number]);
-                        situationData.put("classroom",classArrayRoom[number]);
-                        situationData.put("location",pref.getString("location"+number+""+i,""));
-                        situationData.put("event",pref.getString("event"+number+""+i,""));
-                        situationData.put("score",pref.getInt("score"+number+""+i,0));
-                        situationData.put("date",pref.getString("date"+number+""+i,""));
-                        situationData.put("checker",AVUser.getCurrentUser().getUsername());
-                        situationData.put("dayOfWeek",dayOfWeek);
-                        situationData.put("pattern",pattern);
-                        situationDataList.add(situationData);
-                    }
-                }
-                /*上传数据*/
+        /*获取今天是星期几*/
+        Calendar c = Calendar.getInstance();
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);//Calendar类每周的周一是SunDay
+        /*获取当前日期*/
+        String year = Integer.toString(c.get(Calendar.YEAR));
+        String month,dayOfMonth;
+        if (c.get(Calendar.MONTH)+1<10) {//Calendar类的月数是从0算起的，可能是文化差异？
+            month = "0"+Integer.toString(c.get(Calendar.MONTH)+1);
+        } else {
+            month = Integer.toString(c.get(Calendar.MONTH)+1);
+        }
+        if (c.get(Calendar.DAY_OF_MONTH)<10) {
+            dayOfMonth = "0"+Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+        } else {
+            dayOfMonth = Integer.toString(c.get(Calendar.DAY_OF_MONTH));
+        }
+        Message message = new Message();
+        ArrayList<AVObject> classDataList = new ArrayList<>();
+        ArrayList<AVObject> situationDataList = new ArrayList<>();
+        for (number = 1;number<=max;number++){
+            /*录入应到实到数据*/
+            AVObject classData = new AVObject("ClassData");
+            classData.put("grade",classArrayGrade[number]);
+            classData.put("classroom",classArrayRoom[number]);
+            classData.put("ought",pref.getInt("ought"+number,0));
+            classData.put("fact",pref.getInt("fact"+number,0));
+            classData.put("leave",pref.getInt("leave"+number,0));
+            classData.put("temporary",pref.getInt("temporary"+number,0));
+            classData.put("absent",pref.getInt("absent"+number,0));
+            classData.put("checker", AVUser.getCurrentUser().getUsername());
+            classData.put("dayOfWeek",dayOfWeek);
+            classData.put("date",year+"-"+month+"-"+dayOfMonth);
+            classData.put("pattern",pattern);
+            /*录入图片*/
+            classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
+            if (classImage.exists()){
                 try {
-                    AVObject.saveAll(classDataList);
-                    AVObject.saveAll(situationDataList);
-                } catch (AVException e){
-                    e.printStackTrace();
-                    RecordImageDataActivity.this.e = e;
-                }
-                if (RecordImageDataActivity.this.e == null){
-                    /*清除扣分数据*/
-                    pref.edit().clear().apply();
-                    /*清除内存中图片*/
-                    for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
-                        for (classroom = 1;classroom <= 18;classroom++){
-                            classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
-                            if (classImage.exists()) classImage.delete();
-                        }
+                    File compressedImage = new Compressor(RecordImageDataActivity.this)
+                            .setMaxHeight(150).setQuality(23).compressToFile(classImage);
+                    String fileName = "";
+                    switch (classArrayGrade[number]){
+                        case SENIOR_1:fileName = "高一（"+classArrayRoom[number]+"）班";break;
+                        case SENIOR_2:fileName = "高二（"+classArrayRoom[number]+"）班";break;
+                        case SENIOR_3:fileName = "高三（"+classArrayRoom[number]+"）班";break;
+                        case JUNIOR_1:fileName = "初一（"+classArrayRoom[number]+"）班";break;
+                        case JUNIOR_2:fileName = "初二（"+classArrayRoom[number]+"）班";break;
+                        case JUNIOR_3:fileName = "初三（"+classArrayRoom[number]+"）班";break;
                     }
-                    /*清除非正常关闭标志*/
-                    SharedPreferences.Editor editor = RecordImageDataActivity.this.pref.edit();
-                    editor.putBoolean("isError",false).apply();
-                    /*发送检查完成消息*/
-                    message.what = UPLOAD_OK;
-                    handler.sendMessage(message);
-                } else {
-                    message.what = UPLOAD_FAILED;
-                    handler.sendMessage(message);
+                    AVFile avFile = AVFile.withFile(fileName,compressedImage);
+                    classData.put("image",avFile);
+                } catch (IOException e){
+                    e.printStackTrace();
                 }
             }
-        }).start();
+            classDataList.add(classData);
+            /*录入扣分情况*/
+            for (int i = 1;i <= pref.getInt("listNum"+number,0);i++){
+                AVObject situationData = new AVObject("SituationData");
+                situationData.put("grade",classArrayGrade[number]);
+                situationData.put("classroom",classArrayRoom[number]);
+                situationData.put("location",pref.getString("location"+number+""+i,""));
+                situationData.put("event",pref.getString("event"+number+""+i,""));
+                situationData.put("score",pref.getInt("score"+number+""+i,0));
+                situationData.put("date",pref.getString("date"+number+""+i,""));
+                situationData.put("checker",AVUser.getCurrentUser().getUsername());
+                situationData.put("dayOfWeek",dayOfWeek);
+                situationData.put("pattern",pattern);
+                situationDataList.add(situationData);
+            }
+        }
+        /*上传数据*/
+        AVObject.saveAllInBackground(classDataList, new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null){
+                    isUploadedClass = true;
+                    if (isUploadedSituation){
+                        /*清除扣分数据*/
+                        pref.edit().clear().apply();
+                        /*清除内存中图片*/
+                        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+                            for (classroom = 1;classroom <= 18;classroom++){
+                                classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                                if (classImage.exists()) classImage.delete();
+                            }
+                        }
+                        /*清除非正常关闭标志*/
+                        SharedPreferences.Editor editor = RecordImageDataActivity.this.pref.edit();
+                        editor.putBoolean("isError",false).apply();
+                        /*关闭活动*/
+                        Looper.prepare();
+                        Toast.makeText(RecordImageDataActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                        Looper.loop();
+                    }
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(RecordImageDataActivity.this,"上传失败，请检查网络后重试",Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                    e.printStackTrace();
+                }
+            }
+        });
+        AVObject.saveAllInBackground(situationDataList, new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (e == null){
+                    isUploadedSituation = true;
+                    if (isUploadedClass){
+                        /*清除扣分数据*/
+                        pref.edit().clear().apply();
+                        /*清除内存中图片*/
+                        for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
+                            for (classroom = 1;classroom <= 18;classroom++){
+                                classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                                if (classImage.exists()) classImage.delete();
+                            }
+                        }
+                        /*清除非正常关闭标志*/
+                        SharedPreferences.Editor editor = RecordImageDataActivity.this.pref.edit();
+                        editor.putBoolean("isError",false).apply();
+                        /*关闭活动*/
+                        Looper.prepare();
+                        Toast.makeText(RecordImageDataActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                        Looper.loop();
+                    }
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(RecordImageDataActivity.this,"上传失败，请检查网络后重试",Toast.LENGTH_SHORT).show();
+                    Looper.loop();
+                    e.printStackTrace();
+                }
+            }
+        });
         return true;
     }
 
