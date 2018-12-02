@@ -2,6 +2,7 @@ package com.gdbjzx.smartmonitor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,7 +93,7 @@ public class NotifyCheckingSituationAdapter extends RecyclerView.Adapter<NotifyC
                 holder.classroomView[i].setVisibility(View.VISIBLE);//显示该班级
                 holder.classroomView[i].setTag(classroom);
                 holder.classroomView[i].setImageResource(aClass.getImageId(classroom));
-                File classImage = new File(mApplication.getContext().getExternalCacheDir(),aClass.getGrade()+""+classroom+".jpg");
+                File classImage = new File(getImagePath(aClass.getGrade(),classroom));
                 if (!classImage.exists()){
                     holder.classroomView[i].setImageResource(aClass.getImageId(classroom));//如果该班级还未检查，则该项显示为灰色
                     context.leftClass++;//剩余未检查班级数+1
@@ -127,5 +128,15 @@ public class NotifyCheckingSituationAdapter extends RecyclerView.Adapter<NotifyC
                 context.finish();
             }
         });
+    }
+
+    private String getImagePath(int grade,int classroom){
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            //SD卡已装入
+            return mApplication.getContext().getExternalFilesDir("images").getPath()+grade+""+classroom+".jpg";
+        } else {
+            //SD卡未装入
+            return mApplication.getContext().getFilesDir().getPath()+grade+""+classroom+".jpg";
+        }
     }
 }

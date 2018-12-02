@@ -2,6 +2,7 @@ package com.gdbjzx.smartmonitor;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -135,7 +136,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
         nextClassButton = (FloatingActionButton) findViewById(R.id.next_class);
         lastClassButton.setClickable(false);
         if (number == max) nextClassButton.setImageResource(R.drawable.tick);
-        classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+        classImage = new File(getImagePath(currentGrade,currentRoom));
         Glide.with(RecordImageDataActivity.this).load(classImage)
                 .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(photoImage);
         ought.setText(pref.getString("ought"+number,""));
@@ -164,7 +165,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
                     /*更新图片和按钮*/
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    classImage = new File(getImagePath(currentGrade,currentRoom));
                     Glide.with(RecordImageDataActivity.this).load(classImage)
                             .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(photoImage);
                     /*更换应到实到数据*/
@@ -206,7 +207,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                             case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                         }
                         /*更新图片和按钮*/
-                        classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                        classImage = new File(getImagePath(currentGrade,currentRoom));
                         Glide.with(RecordImageDataActivity.this).load(classImage)
                                 .skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE).into(photoImage);
                         /*更新应到实到数据*/
@@ -268,7 +269,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
         if (!factString.isEmpty()) factNum = Integer.parseInt(factString);
         if (!leaveString.isEmpty()) leaveNum = Integer.parseInt(leaveString);
         if (!temporaryString.isEmpty()) temporaryNum = Integer.parseInt(temporaryString);
-        final int absent = oughtNum + temporaryNum - factNum - leaveNum;
+        final int absent = oughtNum - factNum - leaveNum;
         if (oughtString.isEmpty() || factString.isEmpty() || leaveString.isEmpty() || temporaryString.isEmpty()){
             return false;
         } else {
@@ -284,7 +285,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         .putInt("absent"+number,absent)
                         .apply();
                 return true;
-            } else if (absent < 0){
+            } else if ((absent < 0) || (absent + temporaryNum >0)){
                 Toast.makeText(RecordImageDataActivity.this,"输入有误，请检查",Toast.LENGTH_SHORT).show();
                 return false;
             } else {
@@ -339,7 +340,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
             classData.put("date",year+"-"+month+"-"+dayOfMonth);
             classData.put("pattern",pattern);
             /*录入图片*/
-            classImage = new File(getExternalCacheDir(),classArrayGrade[number]+""+classArrayRoom[number]+".jpg");
+            classImage = new File(getImagePath(classArrayGrade[number],classArrayRoom[number]));
             if (classImage.exists()){
                 try {
                     File compressedImage = new Compressor(RecordImageDataActivity.this)
@@ -387,7 +388,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         /*清除内存中图片*/
                         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
                             for (classroom = 1;classroom <= 18;classroom++){
-                                classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                                classImage = new File(getImagePath(grade,classroom));
                                 if (classImage.exists()) classImage.delete();
                             }
                         }
@@ -420,7 +421,7 @@ public class RecordImageDataActivity extends AppCompatActivity {
                         /*清除内存中图片*/
                         for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
                             for (classroom = 1;classroom <= 18;classroom++){
-                                classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                                classImage = new File(getImagePath(grade,classroom));
                                 if (classImage.exists()) classImage.delete();
                             }
                         }
@@ -445,4 +446,13 @@ public class RecordImageDataActivity extends AppCompatActivity {
         return true;
     }
 
+    private String getImagePath(int grade,int classroom){
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            //SD卡已装入
+            return getExternalFilesDir("images").getPath()+grade+""+classroom+".jpg";
+        } else {
+            //SD卡未装入
+            return getFilesDir().getPath()+grade+""+classroom+".jpg";
+        }
+    }
 }

@@ -101,15 +101,12 @@ public class RecordSituationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 /*将输入的数据录入到列表中*/
                 String locationYString,locationXString,scoreString,score2String;
-                int locationY,locationX,score,score2;
+                float locationY,locationX;
+                int score,score2;
 
                 locationYString = locationYText.getText().toString();
                 locationXString = locationXText.getText().toString();
                 scoreString = scoreText.getText().toString();
-                if (!locationYString.isEmpty())locationY = Integer.parseInt(locationYString);
-                    else locationY = 0;
-                if (!locationXString.isEmpty())locationX = Integer.parseInt(locationXString);
-                    else locationX = 0;
                 if (!scoreString.isEmpty()) score = Integer.parseInt(scoreString);
                     else score = 0;
 
@@ -123,12 +120,12 @@ public class RecordSituationActivity extends AppCompatActivity {
                 String event2 = event2Text.getText().toString();
                 if (!score2String.isEmpty()) score2 = Integer.parseInt(score2String);
                     else score2 = 0;
-                if ((locationY > 0) && (locationX > 0) && (event != "") && (score>0)){
+                if ((!locationYString.isEmpty()) && (!locationXString.isEmpty()) && (event != "") && (score>0)){
                     listNum++;
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// HH:mm:ss
                     Date date = new Date(System.currentTimeMillis());//获取当前时间
                     String formatedDate = simpleDateFormat.format(date).toString();
-                    situationList.add(new mSituation("第"+locationY+"列第"+locationX+"排",event,score,formatedDate));
+                    situationList.add(new mSituation("第"+locationYString+"列第"+locationXString+"排",event,score,formatedDate));
                     adapter.notifyDataSetChanged();
                     locationYText.setText("");
                     locationXText.setText("");

@@ -2,7 +2,6 @@ package com.gdbjzx.smartmonitor;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +11,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -47,11 +45,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -120,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     if (number == 1) lastClassButton.setClickable(false);
                     if (number == max) nextClassButton.setImageResource(R.drawable.tick);
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    classImage = new File(getImagePath(currentGrade,currentRoom));
                     if (classImage.exists()){
                         showImage(ShowMode.SHOW_IMAGE);
                         takePhotoButtonMode = DELETE;
@@ -201,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     /*清除内存中图片*/
                     for (grade = SENIOR_1;grade <= JUNIOR_3;grade++){
                         for (classroom = 1;classroom <= 18;classroom++){
-                            classImage = new File(getExternalCacheDir(),grade+""+classroom+".jpg");
+                            classImage = new File(getImagePath(grade,classroom));
                             if (classImage.exists()) classImage.delete();
                         }
                     }
@@ -296,7 +291,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (takePhotoButtonMode == CAMERA){
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    String path = getImagePath(currentGrade,currentRoom);
+                    classImage = new File(path);
                     try {
                         if (classImage.exists()){
                             classImage.delete();
@@ -305,20 +301,20 @@ public class MainActivity extends AppCompatActivity {
                     } catch (IOException e){
                         e.printStackTrace();
                     }//检测是否存在图片，存在则删除
-                    if (Build.VERSION.SDK_INT >= 24){
-                        ContentValues contentValues = new ContentValues(1);
-                        contentValues.put(MediaStore.Images.Media.DATA,classImage.getAbsolutePath());
-                        imageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,contentValues);
-                    } else {
+                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){//适配Android7.0+版本
+                        imageUri = FileProvider.getUriForFile(MainActivity.this,
+                                "com.gdbjzx.smartmonitor.fileprovider",classImage);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } else {//适配Android6.0+版本
                         imageUri = Uri.fromFile(classImage);
                     }//获取图片的本地真实路径
                     /*启动相机*/
-                    Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
                     intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
                     startActivityForResult(intent,TAKE_PHOTO);
                 } else if (takePhotoButtonMode == DELETE){
                     /*清除照片*/
-                    new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg").delete();
+                    new File(getImagePath(currentGrade,currentRoom)).delete();
                     showImage(ShowMode.SHOW_BLANK);
                     /*更改按钮*/
                     takePhotoButtonMode = CAMERA;
@@ -361,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
                     /*更新图片和按钮*/
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    classImage = new File(getImagePath(currentGrade,currentRoom));
                     if (classImage.exists()) {
                         showImage(ShowMode.SHOW_IMAGE);
                         takePhotoButtonMode = DELETE;
@@ -397,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
                     /*更新图片和按钮*/
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    classImage = new File(getImagePath(currentGrade,currentRoom));
                     if (classImage.exists()) {
                         showImage(ShowMode.SHOW_IMAGE);
                         takePhotoButtonMode = DELETE;
@@ -425,16 +421,13 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser == null){
             Intent intent = new Intent(MainActivity.this,LoginActivity.class);
             startActivityForResult(intent,LOGIN);
-        }
-
-        /*强制设置检查顺序*/
-        if (max == 0) {
+        } else if (max == 0) {
+            /*强制设置检查顺序*/
             Toast.makeText(MainActivity.this,"请先设置检查顺序",Toast.LENGTH_SHORT);
             Intent intent = new Intent(mApplication.getContext(),SetRegulationActivity.class);
             intent.putExtra("pattern",pattern);
             startActivityForResult(intent,SET_REGULATION);
         }
-
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -486,7 +479,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK){
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        classImage = new File(String.valueOf(classImage));
+                    } else {
+                        classImage = new File(imageUri.getEncodedPath());
+                    }
                     /*显示拍摄的照片*/
                     showImage(ShowMode.SHOW_IMAGE);
                     /*更新按钮*/
@@ -523,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
                         case JUNIOR_3:classNameView.setText("初三（"+currentRoom+"）班");break;
                     }
                     /*更新图片和按钮*/
-                    classImage = new File(getExternalCacheDir(),currentGrade+""+currentRoom+".jpg");
+                    classImage = new File(getImagePath(currentGrade,currentRoom));
                     if (classImage.exists()) {
                         showImage(ShowMode.SHOW_IMAGE);
                         takePhotoButtonMode = DELETE;
@@ -619,11 +616,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String getImagePath(int grade,int classroom){
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            //SD卡已装入
+            return getExternalFilesDir("images").getPath()+grade+""+classroom+".jpg";
+        } else {
+            //SD卡未装入
+            return getFilesDir().getPath()+grade+""+classroom+".jpg";
+        }
+    }
+
     /*申请读写权限*/
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA};
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
         int permission = ActivityCompat.checkSelfPermission(activity,
@@ -643,78 +651,76 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(final List<AVObject> list, AVException e) {
                 if (list != null){
-                    for (int i = 0;i <= list.size()-1;i++){
-                        final int version = list.get(i).getInt("version");
-                        if (version > mApplication.version){
-                            final AVObject currentList = list.get(i);
-                            final TextView progressText = (TextView) findViewById(R.id.progress_text);
-                            AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle("检查更新")
-                                    .setMessage("有新版本更新，是否更新？")
-                                    .setCancelable(true);
-                            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Toast.makeText(MainActivity.this,"正在下载...",Toast.LENGTH_SHORT);
-                                    AVFile avfile = currentList.getAVFile("file");
-                                    avfile.getDataInBackground(new GetDataCallback() {
-                                        @Override
-                                        public void done(byte[] bytes, AVException e) {
-                                            if (e == null) {
-                                                String directory = Environment
-                                                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                                                        .getPath();
-                                                File file = new File(directory + "/smartmonitor"+version+".apk");
-                                                FileOutputStream stream = null;
+                    final int version = list.get(0).getInt("version");
+                    if (version > mApplication.version){
+                        final AVObject currentList = list.get(0);
+                        final TextView progressText = (TextView) findViewById(R.id.progress_text);
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("检查更新")
+                                .setMessage("有新版本更新，是否更新？")
+                                .setCancelable(true);
+                        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(MainActivity.this,"正在下载...",Toast.LENGTH_SHORT);
+                                AVFile avfile = currentList.getAVFile("file");
+                                avfile.getDataInBackground(new GetDataCallback() {
+                                    @Override
+                                    public void done(byte[] bytes, AVException e) {
+                                        if (e == null) {
+                                            String directory = Environment
+                                                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                                                    .getPath();
+                                            File file = new File(directory + "/smartmonitor"+version+".apk");
+                                            FileOutputStream stream = null;
+                                            try {
+                                                file.createNewFile();
+                                                stream = new FileOutputStream(file);
+                                                stream.write(bytes);
+                                            } catch (Exception e1) {
+                                                e1.printStackTrace();
+                                            } finally {
                                                 try {
-                                                    file.createNewFile();
-                                                    stream = new FileOutputStream(file);
-                                                    stream.write(bytes);
+                                                    stream.close();
+                                                        /*安装软件*/
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+                                                        Uri apkUri = FileProvider.getUriForFile(MainActivity.this
+                                                                , "com.shawpoo.app.fileprovider", file);
+                                                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                                        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                                                    } else {
+                                                        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+                                                    }
+                                                    startActivity(intent);
+                                                    Log.d("stream", "success");
                                                 } catch (Exception e1) {
                                                     e1.printStackTrace();
-                                                } finally {
-                                                    try {
-                                                        stream.close();
-                                                        /*安装软件*/
-                                                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
-                                                            Uri apkUri = FileProvider.getUriForFile(MainActivity.this
-                                                                    , "com.shawpoo.app.fileprovider", file);
-                                                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                                            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                                                        } else {
-                                                            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-                                                        }
-                                                        startActivity(intent);
-                                                        Log.d("stream", "success");
-                                                    } catch (Exception e1) {
-                                                        e1.printStackTrace();
-                                                    }
                                                 }
-                                            } else {
-                                                Toast.makeText(MainActivity.this, "下载错误:" + e, Toast.LENGTH_LONG).show();
-                                                e.printStackTrace();
                                             }
+                                        } else {
+                                            Toast.makeText(MainActivity.this, "下载错误:" + e, Toast.LENGTH_LONG).show();
+                                            e.printStackTrace();
                                         }
-                                    }, new ProgressCallback() {
-                                        @Override
-                                        public void done(Integer integer) {
-                                            progressText.setText("已下载"+integer+"%");
-                                        }
-                                    });
-                                }
-                            });
-                            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    if (currentList.getBoolean("significant")){
-                                        Toast.makeText(MainActivity.this,"重要更新，请更新后再使用",Toast.LENGTH_LONG).show();
-                                        finish();
                                     }
+                                }, new ProgressCallback() {
+                                    @Override
+                                    public void done(Integer integer) {
+                                        progressText.setText("已下载"+integer+"%");
+                                    }
+                                });
+                            }
+                        });
+                        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (currentList.getBoolean("significant")){
+                                    Toast.makeText(MainActivity.this,"重要更新，请更新后再使用",Toast.LENGTH_LONG).show();
+                                    finish();
                                 }
-                            }).show();
-                        }
+                            }
+                        }).show();
                     }
                 }
             }

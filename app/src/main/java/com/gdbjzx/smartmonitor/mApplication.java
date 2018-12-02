@@ -26,7 +26,7 @@ public class mApplication extends Application {
         context = getApplicationContext();
 
         /*配置版本号*/
-        version = 6;
+        version = 7;
 
         /*Android7.0以上版本打开相机闪退修复*/
         if (Build.VERSION.SDK_INT >= 24) {

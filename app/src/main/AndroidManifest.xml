@@ -15,13 +15,15 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <!-- 基础模块 END -->
     <application
         android:name=".mApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="智慧纪检"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
